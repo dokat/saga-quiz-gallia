@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { GameState, Team, Question } from './types';
 import InitScreen from './components/screens/InitScreen';
@@ -8,6 +9,11 @@ import { motion } from 'motion/react';
 import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
 
+const basePath = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+console.log('basePath ', basePath);
+
 function App() {
   const [gameState, setGameState] = useState<GameState>('INIT');
   const [teams, setTeams] = useState<Team[]>([
@@ -16,12 +22,14 @@ function App() {
   ]);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
+  console.log(questions);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('/questions.json')
+    fetch(`${basePath}questions.json`)
       .then((res) => res.json())
-      .then((data) => setQuestions(data))
+      .then((data) => setQuestions(data as Question[]))
       .catch((err) => console.error('Failed to load questions:', err));
   }, []);
 
@@ -79,7 +87,7 @@ function App() {
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={questions[currentQuestionIdx].titleVideoUrl}
+            src={`./${questions[currentQuestionIdx].titleVideoUrl}`}
             onEnded={handleQuestionTitleEnded}
           />
         </motion.div>
@@ -95,7 +103,7 @@ function App() {
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={questions[currentQuestionIdx].questionVideoUrl}
+            src={`./${questions[currentQuestionIdx].questionVideoUrl}`}
             onEnded={handleQuestionEnded}
           />
 

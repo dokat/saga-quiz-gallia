@@ -27,7 +27,6 @@ export default tseslint.config(
     },
     plugins: {
       'react-hooks': reactHooks,
-      '@tanstack/query': pluginQuery,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,

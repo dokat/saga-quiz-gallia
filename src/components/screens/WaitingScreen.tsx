@@ -13,7 +13,7 @@ const WaitingScreen = ({ onStart }: WaitingScreenProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <VideoPlayer src="/videos/0_ATTENTE.mp4" loop onClick={onStart} className="brightness-75" />
+      <VideoPlayer src="./videos/0_ATTENTE.mp4" loop onClick={onStart} className="brightness-75" />
       <motion.div
         animate={{ opacity: [0.3, 1, 0.3], scale: [0.98, 1.02, 0.98] }}
         transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
