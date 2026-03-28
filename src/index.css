@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #f59e0b;
+  --color-secondary: #3b82f6;
+  --color-team1: #ef4444;
+  --color-team2: #10b981;
+}
+
+html,
+body,
+#root {
+  @apply h-screen w-full overflow-hidden;
+}
