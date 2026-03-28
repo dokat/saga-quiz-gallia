@@ -1,0 +1,54 @@
+[
+  {
+    "id": "q1",
+    "titleVideoUrl": "/videos/2_QUIZ_QUESTION_1_TITLE.mp4",
+    "questionVideoUrl": "/videos/2_QUIZ_QUESTION_1.mp4",
+    "answerVideoUrl": "/videos/2_QUIZ_REPONSE_1.mp4",
+    "correctAnswerIndex": 0,
+    "zones": [
+      { "id": "z1", "label": "A", "x": 197, "y": 227, "w": 730, "h": 328 },
+      { "id": "z2", "label": "B", "x": 998, "y": 227, "w": 730, "h": 328 },
+      { "id": "z3", "label": "C", "x": 197, "y": 580, "w": 730, "h": 328 },
+      { "id": "z4", "label": "D", "x": 998, "y": 580, "w": 730, "h": 328 }
+    ]
+  },
+  {
+    "id": "q2",
+    "titleVideoUrl": "/videos/2_QUIZ_QUESTION_2_TITLE.mp4",
+    "questionVideoUrl": "/videos/2_QUIZ_QUESTION_2.mp4",
+    "answerVideoUrl": "/videos/2_QUIZ_REPONSE_2.mp4",
+    "correctAnswerIndex": 0,
+    "zones": [
+      { "id": "z1", "label": "A", "x": 197, "y": 227, "w": 730, "h": 328 },
+      { "id": "z2", "label": "B", "x": 998, "y": 227, "w": 730, "h": 328 },
+      { "id": "z3", "label": "C", "x": 197, "y": 580, "w": 730, "h": 328 },
+      { "id": "z4", "label": "D", "x": 998, "y": 580, "w": 730, "h": 328 }
+    ]
+  },
+  {
+    "id": "q3",
+    "titleVideoUrl": "/videos/2_QUIZ_QUESTION_3_TITLE.mp4",
+    "questionVideoUrl": "/videos/2_QUIZ_QUESTION_3.mp4",
+    "answerVideoUrl": "/videos/2_QUIZ_REPONSE_3.mp4",
+    "correctAnswerIndex": 0,
+    "zones": [
+      { "id": "z1", "label": "A", "x": 197, "y": 227, "w": 730, "h": 328 },
+      { "id": "z2", "label": "B", "x": 998, "y": 227, "w": 730, "h": 328 },
+      { "id": "z3", "label": "C", "x": 197, "y": 580, "w": 730, "h": 328 },
+      { "id": "z4", "label": "D", "x": 998, "y": 580, "w": 730, "h": 328 }
+    ]
+  },
+  {
+    "id": "q4",
+    "titleVideoUrl": "/videos/2_QUIZ_QUESTION_4_TITLE.mp4",
+    "questionVideoUrl": "/videos/2_QUIZ_QUESTION_4.mp4",
+    "answerVideoUrl": "/videos/2_QUIZ_REPONSE_4.mp4",
+    "correctAnswerIndex": 0,
+    "zones": [
+      { "id": "z1", "label": "A", "x": 197, "y": 227, "w": 730, "h": 328 },
+      { "id": "z2", "label": "B", "x": 998, "y": 227, "w": 730, "h": 328 },
+      { "id": "z3", "label": "C", "x": 197, "y": 580, "w": 730, "h": 328 },
+      { "id": "z4", "label": "D", "x": 998, "y": 580, "w": 730, "h": 328 }
+    ]
+  }
+]
