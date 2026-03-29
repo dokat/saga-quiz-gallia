@@ -70,16 +70,20 @@ function App() {
 
   const handleResultFeedbackEnded = useCallback(() => {
     if (lastResult === 'TRUE') {
-      if (currentQuestionIdx < questions.length - 1) {
-        setCurrentQuestionIdx((idx) => idx + 1);
-        setGameState('COUNTDOWN');
-      } else {
-        console.log('fin');
-      }
+      setGameState('ANSWER_VIDEO');
     } else {
       setGameState('RESPONSE');
     }
   }, [lastResult, currentQuestionIdx, questions.length]);
+
+  const handleAnswerVideoEnded = useCallback(() => {
+    if (currentQuestionIdx < questions.length - 1) {
+      setCurrentQuestionIdx((idx) => idx + 1);
+      setGameState('COUNTDOWN');
+    } else {
+      console.log('fin');
+    }
+  }, [currentQuestionIdx, questions.length]);
 
   if (questions.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
@@ -152,6 +156,22 @@ function App() {
           isCorrect={lastResult === 'TRUE'}
           onEnded={handleResultFeedbackEnded}
         />
+      )}
+
+      {/* 6. ANSWER VIDEO STATE */}
+      {gameState === 'ANSWER_VIDEO' && (
+        <motion.div
+          key="answer-video"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-0"
+        >
+          <VideoPlayer
+            src={`./${questions[currentQuestionIdx].answerVideoUrl}`}
+            onEnded={handleAnswerVideoEnded}
+          />
+        </motion.div>
       )}
     </div>
   );
