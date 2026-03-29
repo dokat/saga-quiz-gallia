@@ -8,6 +8,7 @@ import CountdownScreen from './components/screens/CountdownScreen';
 import { motion } from 'motion/react';
 import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
+import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
 
 // const basePath = import.meta.env.BASE_URL.endsWith('/')
 //   ? import.meta.env.BASE_URL
@@ -22,7 +23,7 @@ function App() {
   ]);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
-  console.log(questions);
+  const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -50,16 +51,39 @@ function App() {
 
   const handleResponse = useCallback(
     (zoneIndex: number, teamIndex: number) => {
-      console.log(teamIndex, ' --> ', zoneIndex);
+      const question = questions[currentQuestionIdx];
+      const isCorrect = zoneIndex === question.correctAnswerIndex;
+
+      setLastResult(isCorrect ? 'TRUE' : 'FALSE');
+      setGameState('RESULT_FEEDBACK');
+
+      if (isCorrect) {
+        setTeams((prev) => {
+          const newTeams = [...prev];
+          newTeams[teamIndex] = { ...newTeams[teamIndex], score: newTeams[teamIndex].score + 1 };
+          return newTeams;
+        });
+      }
     },
-    [teams, currentQuestionIdx]
+    [currentQuestionIdx, questions]
   );
+
+  const handleResultFeedbackEnded = useCallback(() => {
+    if (lastResult === 'TRUE') {
+      if (currentQuestionIdx < questions.length - 1) {
+        setCurrentQuestionIdx((idx) => idx + 1);
+        setGameState('COUNTDOWN');
+      } else {
+        console.log('fin');
+      }
+    } else {
+      setGameState('RESPONSE');
+    }
+  }, [lastResult, currentQuestionIdx, questions.length]);
 
   if (questions.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
   }
-
-  //TEST
 
   return (
     <div
@@ -122,7 +146,13 @@ function App() {
         </motion.div>
       )}
 
-      {/* 5. SCORE STATE */}
+      {/* 5. RESULT FEEDBACK STATE */}
+      {gameState === 'RESULT_FEEDBACK' && (
+        <ResultFeedbackScreen
+          isCorrect={lastResult === 'TRUE'}
+          onEnded={handleResultFeedbackEnded}
+        />
+      )}
     </div>
   );
 }
