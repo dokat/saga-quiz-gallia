@@ -9,10 +9,10 @@ import { motion } from 'motion/react';
 import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
 
-const basePath = import.meta.env.BASE_URL.endsWith('/')
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
-console.log('basePath ', basePath);
+// const basePath = import.meta.env.BASE_URL.endsWith('/')
+//   ? import.meta.env.BASE_URL
+//   : `${import.meta.env.BASE_URL}/`;
+// console.log('basePath ', basePath);
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('INIT');
@@ -27,7 +27,8 @@ function App() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`${basePath}questions.json`)
+    // fetch(`${basePath}questions.json`)
+    fetch(`./questions.json`)
       .then((res) => res.json())
       .then((data) => setQuestions(data as Question[]))
       .catch((err) => console.error('Failed to load questions:', err));
