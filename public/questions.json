@@ -45,7 +45,7 @@
     "id": "q2",
     "titleVideoUrl": "/videos/2_QUIZ_QUESTION_2_TITLE.mp4",
     "questionVideoUrl": "/videos/2_QUIZ_QUESTION_2.mp4",
-    "questionImageUrl": "/videos/2_QUIZ_QUESTION_2png",
+    "questionImageUrl": "/videos/2_QUIZ_QUESTION_2.png",
     "answerVideoUrl": "/videos/2_QUIZ_REPONSE_2.mp4",
     "correctAnswerIndex": 0,
     "zones": [
@@ -87,7 +87,7 @@
     "id": "q3",
     "titleVideoUrl": "/videos/2_QUIZ_QUESTION_3_TITLE.mp4",
     "questionVideoUrl": "/videos/2_QUIZ_QUESTION_3.mp4",
-    "questionImageUrl": "/videos/2_QUIZ_QUESTION_3png",
+    "questionImageUrl": "/videos/2_QUIZ_QUESTION_3.png",
     "answerVideoUrl": "/videos/2_QUIZ_REPONSE_3.mp4",
     "correctAnswerIndex": 0,
     "zones": [
