@@ -124,8 +124,8 @@ function App() {
         </motion.div>
       )}
 
-      {/* 4. QUESTION & RESPONSE STATE */}
-      {(gameState === 'QUESTION' || gameState === 'RESPONSE') && (
+      {/* 4. QUESTION STATE */}
+      {gameState === 'QUESTION' && (
         <motion.div
           key="question-cycle"
           initial={{ opacity: 0 }}
@@ -137,20 +137,29 @@ function App() {
             src={`./${questions[currentQuestionIdx].questionVideoUrl}`}
             onEnded={handleQuestionEnded}
           />
-
-          {/* Draggable Interaction Layer */}
-          {gameState === 'RESPONSE' && (
-            <DraggableTeams
-              teams={teams}
-              question={questions[currentQuestionIdx]}
-              containerRef={containerRef}
-              onResponse={handleResponse}
-            />
-          )}
         </motion.div>
       )}
 
-      {/* 5. RESULT FEEDBACK STATE */}
+      {/* 5. RESPONSE STATE */}
+      {gameState === 'RESPONSE' && (
+        <motion.div
+          key="question-cycle"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-0"
+        >
+          <img src={`./${questions[currentQuestionIdx].questionImageUrl}`} className='w-full h-full' />
+          <DraggableTeams
+            teams={teams}
+            question={questions[currentQuestionIdx]}
+            containerRef={containerRef}
+            onResponse={handleResponse}
+          />
+        </motion.div>
+      )}
+
+      {/* 6. RESULT FEEDBACK STATE */}
       {gameState === 'RESULT_FEEDBACK' && (
         <ResultFeedbackScreen
           isCorrect={lastResult === 'TRUE'}
@@ -158,7 +167,7 @@ function App() {
         />
       )}
 
-      {/* 6. ANSWER VIDEO STATE */}
+      {/* 7. ANSWER VIDEO STATE */}
       {gameState === 'ANSWER_VIDEO' && (
         <motion.div
           key="answer-video"
