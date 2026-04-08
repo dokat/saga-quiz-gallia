@@ -6,12 +6,16 @@ export type GameState =
   | 'QUESTION' // Playing question video
   | 'RESPONSE' // Video ended, waiting for drag & drop
   | 'RESULT_FEEDBACK' // Playing True or False video
-  | 'ANSWER_VIDEO'; // Playing the actual answer video
+  | 'ANSWER_VIDEO' // Playing the actual answer video
+  | 'SCORE_SCREEN'; // Final score screen
+
+export type LastResult = 'TRUE' | 'FALSE' | null;
 
 export interface Question {
   id: string;
   titleVideoUrl: string;
   questionVideoUrl: string;
+  questionImageUrl: string;
   answerVideoUrl: string;
   correctAnswerIndex: number; // 0-3
   zones: {
