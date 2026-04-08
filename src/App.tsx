@@ -85,6 +85,15 @@ function App() {
     }
   }, [currentQuestionIdx, questions.length]);
 
+  const handleStartApp = useCallback(() => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    }
+    setGameState('WAITING');
+  }, []);
+
   if (questions.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
   }
@@ -98,7 +107,9 @@ function App() {
       {(gameState === 'COUNTDOWN' || gameState === 'QUESTION_TITLE' || gameState === 'ANSWER_VIDEO') && <TeamUI teams={teams} />}
 
       {/* 0. INIT STATE */}
-      {gameState === 'INIT' && <InitScreen onStart={() => setGameState('WAITING')} />}
+      {gameState === 'INIT' && (
+        <InitScreen onStart={handleStartApp} />
+      )}
 
       {/* 1. WAITING STATE */}
       {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} />}
