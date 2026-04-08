@@ -79,7 +79,7 @@ function App() {
   const handleAnswerVideoEnded = useCallback(() => {
     if (currentQuestionIdx < questions.length - 1) {
       setCurrentQuestionIdx((idx) => idx + 1);
-      setGameState('COUNTDOWN');
+      setGameState('QUESTION_TITLE');
     } else {
       console.log('fin');
     }
@@ -95,7 +95,7 @@ function App() {
       className="relative w-full h-full bg-zinc-900 overflow-hidden select-none touch-none"
     >
       {/* Global persistent UI layer */}
-      {(gameState === 'COUNTDOWN' || gameState === 'QUESTION_TITLE') && <TeamUI teams={teams} />}
+      {(gameState === 'COUNTDOWN' || gameState === 'QUESTION_TITLE' || gameState === 'ANSWER_VIDEO') && <TeamUI teams={teams} />}
 
       {/* 0. INIT STATE */}
       {gameState === 'INIT' && <InitScreen onStart={() => setGameState('WAITING')} />}
@@ -149,7 +149,8 @@ function App() {
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
         >
-          <img src={`./${questions[currentQuestionIdx].questionImageUrl}`} className='w-full h-full' />
+          <img src={`./${questions[currentQuestionIdx].questionImageUrl}`} alt={`./${questions[currentQuestionIdx].questionImageUrl}`} className='w-full h-full' />
+
           <DraggableTeams
             teams={teams}
             question={questions[currentQuestionIdx]}
@@ -175,10 +176,10 @@ function App() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
+          onClick={handleAnswerVideoEnded}
         >
           <VideoPlayer
             src={`./${questions[currentQuestionIdx].answerVideoUrl}`}
-            onEnded={handleAnswerVideoEnded}
           />
         </motion.div>
       )}
