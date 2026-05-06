@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { GameState, Team, Question } from './types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { GameState, Team, Sequence } from './types';
 import InitScreen from './components/screens/InitScreen';
 import WaitingScreen from './components/screens/WaitingScreen';
 import { TeamUI } from './components/TeamUI';
@@ -21,24 +21,36 @@ function App() {
     { name: 'Équipe 1', score: 0, color: 'bg-red-500' },
     { name: 'Équipe 2', score: 0, color: 'bg-blue-500' },
   ]);
+  const [currentSequenceIdx, setCurrentSequenceIdx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const globalQuestionIdx = useMemo(() => {
+    let idx = 0;
+    for (let i = 0; i < currentSequenceIdx; i++) {
+      if (sequences[i]?.questions) {
+        idx += sequences[i].questions.length;
+      }
+    }
+    return idx + currentQuestionIdx;
+  }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   useEffect(() => {
     // fetch(`${basePath}questions.json`)
     fetch(`./questions.json`)
       .then((res) => res.json())
-      .then((data) => setQuestions(data as Question[]))
-      .catch((err) => console.error('Failed to load questions:', err));
+      .then((data) => setSequences(data as Sequence[]))
+      .catch((err) => console.error('Failed to load sequences:', err));
   }, []);
 
   const resetGame = useCallback(() => {
     setTeams((prev) => prev.map((t) => ({ ...t, score: 0 })));
+    setCurrentSequenceIdx(0);
     setCurrentQuestionIdx(0);
-    setGameState('COUNTDOWN');
+    setGameState('SEQUENCE_TITLE');
   }, []);
 
   const handleQuestionTitleEnded = useCallback(() => {
@@ -51,7 +63,10 @@ function App() {
 
   const handleResponse = useCallback(
     (zoneIndex: number, teamIndex: number) => {
-      const question = questions[currentQuestionIdx];
+      const sequence = sequences[currentSequenceIdx];
+      if (!sequence) return;
+
+      const question = sequence.questions[currentQuestionIdx];
       const isCorrect = zoneIndex === question.correctAnswerIndex;
 
       setLastResult(isCorrect ? 'TRUE' : 'FALSE');
@@ -65,7 +80,7 @@ function App() {
         });
       }
     },
-    [currentQuestionIdx, questions]
+    [currentSequenceIdx, currentQuestionIdx, sequences]
   );
 
   const handleResultFeedbackEnded = useCallback(() => {
@@ -74,16 +89,24 @@ function App() {
     } else {
       setGameState('RESPONSE');
     }
-  }, [lastResult, currentQuestionIdx, questions.length]);
+  }, [lastResult]);
 
   const handleAnswerVideoEnded = useCallback(() => {
-    if (currentQuestionIdx < questions.length - 1) {
+    const sequence = sequences[currentSequenceIdx];
+    if (!sequence) return;
+
+    if (currentQuestionIdx < sequence.questions.length - 1) {
       setCurrentQuestionIdx((idx) => idx + 1);
       setGameState('QUESTION_TITLE');
+    } else if (currentSequenceIdx < sequences.length - 1) {
+      setCurrentSequenceIdx((idx) => idx + 1);
+      setCurrentQuestionIdx(0);
+      setGameState('SEQUENCE_TITLE');
     } else {
       console.log('fin');
+      setGameState('WAITING');
     }
-  }, [currentQuestionIdx, questions.length]);
+  }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   const handleStartApp = useCallback(() => {
     if (document.documentElement.requestFullscreen) {
@@ -94,7 +117,7 @@ function App() {
     setGameState('WAITING');
   }, []);
 
-  if (questions.length === 0) {
+  if (sequences.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
   }
 
@@ -114,7 +137,23 @@ function App() {
       {/* 1. WAITING STATE */}
       {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} />}
 
-      {/* 2. TITLE STATE */}
+      {/* 2. SEQUENCE TITLE STATE */}
+      {gameState === 'SEQUENCE_TITLE' && (
+        <motion.div
+          key={`sequence-title-cycle-${currentSequenceIdx}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-0"
+        >
+          <VideoPlayer
+            src={`./videos/${sequences[currentSequenceIdx].sequence}`}
+            onEnded={() => setGameState('COUNTDOWN')}
+          />
+        </motion.div>
+      )}
+
+      {/* 2.5 TITLE STATE (COUNTDOWN) */}
       {gameState === 'COUNTDOWN' && (
         <CountdownScreen onStartQuestion={() => setGameState('QUESTION_TITLE')} />
       )}
@@ -122,52 +161,42 @@ function App() {
       {/* 3. QUESTION TITLE STATE */}
       {gameState === 'QUESTION_TITLE' && (
         <motion.div
-          key="question-title-cycle"
+          key={`question-title-cycle-${globalQuestionIdx}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={`./${questions[currentQuestionIdx].titleVideoUrl}`}
+            src={`./videos/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
             onEnded={handleQuestionTitleEnded}
           />
         </motion.div>
       )}
 
-      {/* 4. QUESTION STATE */}
-      {gameState === 'QUESTION' && (
+      {/* 4 & 5. QUESTION AND RESPONSE STATE */}
+      {(gameState === 'QUESTION' || gameState === 'RESPONSE') && (
         <motion.div
-          key="question-cycle"
+          key={`question-cycle-${globalQuestionIdx}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={`./${questions[currentQuestionIdx].questionVideoUrl}`}
-            onEnded={handleQuestionEnded}
+            src={`./videos/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
+            onEnded={gameState === 'QUESTION' ? handleQuestionEnded : undefined}
+            loop={false}
           />
-        </motion.div>
-      )}
-
-      {/* 5. RESPONSE STATE */}
-      {gameState === 'RESPONSE' && (
-        <motion.div
-          key="question-cycle"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 z-0"
-        >
-          <img src={`./${questions[currentQuestionIdx].questionImageUrl}`} alt={`./${questions[currentQuestionIdx].questionImageUrl}`} className='w-full h-full' />
-
-          <DraggableTeams
-            teams={teams}
-            question={questions[currentQuestionIdx]}
-            containerRef={containerRef}
-            onResponse={handleResponse}
-          />
+          
+          {gameState === 'RESPONSE' && (
+            <DraggableTeams
+              teams={teams}
+              question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
+              containerRef={containerRef}
+              onResponse={handleResponse}
+            />
+          )}
         </motion.div>
       )}
 
@@ -190,7 +219,7 @@ function App() {
           onClick={handleAnswerVideoEnded}
         >
           <VideoPlayer
-            src={`./${questions[currentQuestionIdx].answerVideoUrl}`}
+            src={`./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`}
           />
         </motion.div>
       )}

@@ -2,6 +2,7 @@ export type GameState =
   | 'INIT' // Initial state to handle autoplay policy
   | 'WAITING' // Initial waiting video
   | 'COUNTDOWN' // Countdown before showing question
+  | 'SEQUENCE_TITLE' // Playing sequence title video
   | 'QUESTION_TITLE' // Playing question title video
   | 'QUESTION' // Playing question video
   | 'RESPONSE' // Video ended, waiting for drag & drop
@@ -11,12 +12,12 @@ export type GameState =
 
 export type LastResult = 'TRUE' | 'FALSE' | null;
 
+export interface Sequence {
+  sequence: string;
+  questions: Question[];
+}
+
 export interface Question {
-  id: string;
-  titleVideoUrl: string;
-  questionVideoUrl: string;
-  questionImageUrl: string;
-  answerVideoUrl: string;
   correctAnswerIndex: number; // 0-3
   zones: {
     id: string;

@@ -7,7 +7,7 @@ interface TeamUIProps {
   teams: Team[];
 }
 export const TeamUI: React.FC<TeamUIProps> = ({ teams }) => (
-  <div className="fixed top-12 left-0 w-full pointer-events-none select-none z-100">
+  <div className="fixed top-44 left-0 w-full pointer-events-none select-none z-100">
     {/* Team 1 (Left) */}
     {teams[0] && (
       <motion.div
