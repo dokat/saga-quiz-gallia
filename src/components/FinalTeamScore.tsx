@@ -29,7 +29,7 @@ export const FinalTeamScore: React.FC<FinalTeamScoreProps> = ({ teams }) => (
     {teams[1] && (
       <motion.div
         key={`team-0-${teams[1].score}`}
-        initial={{ x: -100, opacity: 0 }}
+        initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 100, damping: 15 }}
         className="absolute right-175 top-15"
