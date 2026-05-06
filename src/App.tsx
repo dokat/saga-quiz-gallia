@@ -124,7 +124,7 @@ function App() {
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   const handleScoreScreenEnded = useCallback(() => {
-    setGameState('WAITING');
+    setGameState('DEGUSTATION_VIDEO');
   }, []);
 
   const handleStartApp = useCallback(() => {
@@ -255,6 +255,22 @@ function App() {
       {/* 9. FINAL SCORE STATE */}
       {gameState === 'SCORE_SCREEN' && (
         <FinalScoreScreen onClick={handleScoreScreenEnded} teams={teams} />
+      )}
+
+      {/* 10. DEGUSTATION VIDEO STATE */}
+      {gameState === 'DEGUSTATION_VIDEO' && (
+        <motion.div
+          key="degustation-video"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-0"
+        >
+          <VideoPlayer
+            src="./videos/4_TITRAGE_DEGUSTATION.mp4"
+            onEnded={() => setGameState('WAITING')}
+          />
+        </motion.div>
       )}
     </div>
   );

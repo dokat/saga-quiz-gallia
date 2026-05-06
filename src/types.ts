@@ -9,7 +9,8 @@ export type GameState =
   | 'RESULT_FEEDBACK' // Playing True or False video
   | 'ANSWER_VIDEO' // Playing the actual answer video
   | 'INTERMEDIATE_SCORE' // Showing score between questions
-  | 'SCORE_SCREEN'; // Final score screen
+  | 'SCORE_SCREEN' // Final score screen
+  | 'DEGUSTATION_VIDEO'; // Final degustation video before reset
 
 export type LastResult = 'TRUE' | 'FALSE' | null;
 
