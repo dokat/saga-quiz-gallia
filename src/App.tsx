@@ -9,6 +9,7 @@ import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
 import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
 import { IntermediateScoreScreen } from './components/screens/IntermediateScoreScreen';
+import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
 
 // const basePath = import.meta.env.BASE_URL.endsWith('/')
 //   ? import.meta.env.BASE_URL
@@ -107,10 +108,13 @@ function App() {
       setCurrentQuestionIdx(0);
       setGameState('SEQUENCE_TITLE');
     } else {
-      console.log('fin');
-      setGameState('WAITING');
+      setGameState('SCORE_SCREEN');
     }
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
+
+  const handleScoreScreenEnded = useCallback(() => {
+    setGameState('WAITING');
+  }, []);
 
   const handleStartApp = useCallback(() => {
     if (document.documentElement.requestFullscreen) {
@@ -224,7 +228,6 @@ function App() {
         >
           <VideoPlayer
             src={`./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`}
-            onEnded={handleAnswerVideoEnded}
           />
         </motion.div>
       )}
@@ -232,6 +235,11 @@ function App() {
       {/* 8. INTERMEDIATE SCORE STATE */}
       {gameState === 'INTERMEDIATE_SCORE' && (
         <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} teams={teams} />
+      )}
+
+      {/* 9. FINAL SCORE STATE */}
+      {gameState === 'SCORE_SCREEN' && (
+        <FinalScoreScreen onClick={handleScoreScreenEnded} teams={teams} />
       )}
     </div>
   );
