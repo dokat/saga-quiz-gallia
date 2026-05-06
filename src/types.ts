@@ -8,6 +8,7 @@ export type GameState =
   | 'RESPONSE' // Video ended, waiting for drag & drop
   | 'RESULT_FEEDBACK' // Playing True or False video
   | 'ANSWER_VIDEO' // Playing the actual answer video
+  | 'INTERMEDIATE_SCORE' // Showing score between questions
   | 'SCORE_SCREEN'; // Final score screen
 
 export type LastResult = 'TRUE' | 'FALSE' | null;

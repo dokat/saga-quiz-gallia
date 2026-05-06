@@ -3,12 +3,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GameState, Team, Sequence } from './types';
 import InitScreen from './components/screens/InitScreen';
 import WaitingScreen from './components/screens/WaitingScreen';
-import { TeamUI } from './components/TeamUI';
 import CountdownScreen from './components/screens/CountdownScreen';
 import { motion } from 'motion/react';
 import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
 import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
+import { IntermediateScoreScreen } from './components/screens/IntermediateScoreScreen';
 
 // const basePath = import.meta.env.BASE_URL.endsWith('/')
 //   ? import.meta.env.BASE_URL
@@ -92,6 +92,10 @@ function App() {
   }, [lastResult]);
 
   const handleAnswerVideoEnded = useCallback(() => {
+    setGameState('INTERMEDIATE_SCORE');
+  }, []);
+
+  const handleIntermediateScoreEnded = useCallback(() => {
     const sequence = sequences[currentSequenceIdx];
     if (!sequence) return;
 
@@ -127,7 +131,7 @@ function App() {
       className="relative w-full h-full bg-zinc-900 overflow-hidden select-none touch-none"
     >
       {/* Global persistent UI layer */}
-      {(gameState === 'COUNTDOWN' || gameState === 'QUESTION_TITLE' || gameState === 'ANSWER_VIDEO') && <TeamUI teams={teams} />}
+      {/* {(gameState === 'INTERMEDIATE_SCORE') && <TeamUI teams={teams} />} */}
 
       {/* 0. INIT STATE */}
       {gameState === 'INIT' && (
@@ -188,7 +192,7 @@ function App() {
             onEnded={gameState === 'QUESTION' ? handleQuestionEnded : undefined}
             loop={false}
           />
-          
+
           {gameState === 'RESPONSE' && (
             <DraggableTeams
               teams={teams}
@@ -220,8 +224,14 @@ function App() {
         >
           <VideoPlayer
             src={`./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`}
+            onEnded={handleAnswerVideoEnded}
           />
         </motion.div>
+      )}
+
+      {/* 8. INTERMEDIATE SCORE STATE */}
+      {gameState === 'INTERMEDIATE_SCORE' && (
+        <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} teams={teams} />
       )}
     </div>
   );

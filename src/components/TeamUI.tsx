@@ -7,7 +7,7 @@ interface TeamUIProps {
   teams: Team[];
 }
 export const TeamUI: React.FC<TeamUIProps> = ({ teams }) => (
-  <div className="fixed top-44 left-0 w-full pointer-events-none select-none z-100">
+  <div className="fixed bottom-100 left-0 w-full pointer-events-none select-none z-100">
     {/* Team 1 (Left) */}
     {teams[0] && (
       <motion.div
@@ -15,7 +15,7 @@ export const TeamUI: React.FC<TeamUIProps> = ({ teams }) => (
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-        className="absolute left-16 top-0 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border-4 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex items-center gap-8 min-w-75 border-red-500/30"
+        className="absolute left-100 top-0 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border-4 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex items-center gap-8 min-w-75 border-red-500/30"
       >
         <div className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-3 bg-red-500">
           <Users className="text-white w-10 h-10" />
@@ -42,7 +42,7 @@ export const TeamUI: React.FC<TeamUIProps> = ({ teams }) => (
         initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-        className="absolute right-16 top-0 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border-4 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex items-center gap-8 min-w-75 border-blue-500/30 flex-row-reverse text-right"
+        className="absolute right-100 top-0 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border-4 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex items-center gap-8 min-w-75 border-blue-500/30 flex-row-reverse text-right"
       >
         <div className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 bg-blue-500">
           <Users className="text-white w-10 h-10" />
