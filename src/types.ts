@@ -19,7 +19,7 @@ export interface Sequence {
 }
 
 export interface Question {
-  correctAnswerIndex: number; // 0-3
+  correctAnswerIndex: number | number[]; // 0-3
   zones: {
     id: string;
     label: string;

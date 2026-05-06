@@ -24,6 +24,7 @@ function App() {
   ]);
   const [currentSequenceIdx, setCurrentSequenceIdx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
 
@@ -68,7 +69,9 @@ function App() {
       if (!sequence) return;
 
       const question = sequence.questions[currentQuestionIdx];
-      const isCorrect = zoneIndex === question.correctAnswerIndex;
+      const isCorrect = Array.isArray(question.correctAnswerIndex)
+        ? question.correctAnswerIndex.includes(zoneIndex)
+        : zoneIndex === question.correctAnswerIndex;
 
       setLastResult(isCorrect ? 'TRUE' : 'FALSE');
       setGameState('RESULT_FEEDBACK');
@@ -86,6 +89,7 @@ function App() {
 
   const handleResultFeedbackEnded = useCallback(() => {
     if (lastResult === 'TRUE') {
+      setCurrentAnswerVideoIdx(0);
       setGameState('ANSWER_VIDEO');
     } else {
       setGameState('RESPONSE');
@@ -93,8 +97,15 @@ function App() {
   }, [lastResult]);
 
   const handleAnswerVideoEnded = useCallback(() => {
+    const question = sequences[currentSequenceIdx]?.questions[currentQuestionIdx];
+    if (question && Array.isArray(question.correctAnswerIndex)) {
+      if (currentAnswerVideoIdx < question.correctAnswerIndex.length - 1) {
+        setCurrentAnswerVideoIdx((prev) => prev + 1);
+        return;
+      }
+    }
     setGameState('INTERMEDIATE_SCORE');
-  }, []);
+  }, [currentSequenceIdx, currentQuestionIdx, currentAnswerVideoIdx, sequences]);
 
   const handleIntermediateScoreEnded = useCallback(() => {
     const sequence = sequences[currentSequenceIdx];
@@ -219,7 +230,7 @@ function App() {
       {/* 7. ANSWER VIDEO STATE */}
       {gameState === 'ANSWER_VIDEO' && (
         <motion.div
-          key="answer-video"
+          key={`answer-video-${currentAnswerVideoIdx}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -227,7 +238,11 @@ function App() {
           onClick={handleAnswerVideoEnded}
         >
           <VideoPlayer
-            src={`./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`}
+            src={
+              Array.isArray(sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.correctAnswerIndex)
+                ? `./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
+                : `./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
+            }
           />
         </motion.div>
       )}
