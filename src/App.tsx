@@ -242,7 +242,7 @@ function App() {
             loop={false}
           />
 
-          {gameState === 'RESPONSE' && (
+          {gameState === 'RESPONSE' && appMode === 'TOUCHSCREEN' && (
             <DraggableTeams
               teams={teams}
               question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
