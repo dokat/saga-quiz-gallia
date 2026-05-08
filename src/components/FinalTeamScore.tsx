@@ -16,8 +16,8 @@ export const FinalTeamScore: React.FC<FinalTeamScoreProps> = ({ teams }) => (
         className="absolute left-175 top-15"
       >
         <motion.span
-          initial={{ scale: 1.5, color: '#000' }}
-          animate={{ scale: 1, color: '#000' }}
+          initial={{ scale: 1.5, color: '#00B1a9' }}
+          animate={{ scale: 1, color: '#00B1a9' }}
           className="text-9xl font-black tabular-nums "
         >
           {teams[0].score}
@@ -35,8 +35,8 @@ export const FinalTeamScore: React.FC<FinalTeamScoreProps> = ({ teams }) => (
         className="absolute right-175 top-15"
       >
         <motion.span
-          initial={{ scale: 1.5, color: '#000' }}
-          animate={{ scale: 1, color: '#000' }}
+          initial={{ scale: 1.5, color: '#00B1a9' }}
+          animate={{ scale: 1, color: '#00B1a9' }}
           className="text-9xl font-black tabular-nums "
         >
           {teams[1].score}
