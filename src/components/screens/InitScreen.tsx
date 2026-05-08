@@ -5,9 +5,18 @@ interface InitScreenProps {
   onConnectSerial?: () => void;
   serialConnected?: boolean;
   isSerialSupported?: boolean;
+  appMode: 'TOUCHSCREEN' | 'BUZZER';
+  setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
 }
 
-export const InitScreen = ({ onStart, onConnectSerial, serialConnected, isSerialSupported }: InitScreenProps) => {
+export const InitScreen = ({ 
+  onStart, 
+  onConnectSerial, 
+  serialConnected, 
+  isSerialSupported,
+  appMode,
+  setAppMode
+}: InitScreenProps) => {
   return (
     <motion.div
       key="init"
@@ -24,20 +33,52 @@ export const InitScreen = ({ onStart, onConnectSerial, serialConnected, isSerial
         Lancer l'application
       </div>
       
-      {isSerialSupported && (
-        <button 
+      {/* Input Mode Selector */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-md">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setAppMode('TOUCHSCREEN');
+          }}
+          className={`px-8 py-4 rounded-xl font-black uppercase tracking-wider transition-all ${
+            appMode === 'TOUCHSCREEN'
+              ? 'bg-white text-zinc-900 shadow-xl scale-105'
+              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+          }`}
+        >
+          Tactile
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setAppMode('BUZZER');
+          }}
+          className={`px-8 py-4 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-3 ${
+            appMode === 'BUZZER'
+              ? 'bg-yellow-500 text-white shadow-xl scale-105'
+              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+          }`}
+        >
+          Buzzer
+          {appMode === 'BUZZER' && serialConnected && (
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          )}
+        </button>
+      </div>
+
+      {/* Serial Connect Button (only shown if BUZZER mode is selected and not connected) */}
+      {appMode === 'BUZZER' && isSerialSupported && !serialConnected && (
+        <motion.button 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           onClick={(e) => {
             e.stopPropagation();
             onConnectSerial?.();
           }}
-          className={`absolute bottom-8 right-8 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${
-            serialConnected 
-              ? 'bg-green-500/20 text-green-400 border-2 border-green-500/50' 
-              : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10 hover:text-white'
-          }`}
+          className="absolute bottom-32 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-green-500 text-white font-bold hover:bg-green-400 transition-all shadow-lg animate-bounce"
         >
-          {serialConnected ? 'Arduino Connecté (Série)' : 'Connecter Arduino (Série)'}
-        </button>
+          Connecter l'Arduino (Série)
+        </motion.button>
       )}
     </motion.div>
   );

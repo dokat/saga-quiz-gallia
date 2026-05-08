@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 
-export const useHardwareInput = (onInput: (key: string) => void) => {
+export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCREEN' | 'BUZZER') => {
   const [isSerialSupported, setIsSerialSupported] = useState(false);
   const [serialConnected, setSerialConnected] = useState(false);
 
@@ -10,9 +10,12 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
     }
   }, []);
 
-  // 1. Native Keyboard Support (Option 2)
+  // 1. Keyboard Support (Enabled only in BUZZER mode)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Only process keyboard input if in BUZZER mode
+      if (mode !== 'BUZZER') return;
+
       // Ignore input if typing in an input field
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
         return;
@@ -22,9 +25,9 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onInput]);
+  }, [onInput, mode]);
 
-  // 2. Web Serial API Support (Option 1)
+  // 2. Web Serial API Support (Enabled only in BUZZER mode)
   const connectSerial = useCallback(async () => {
     if (!('serial' in navigator)) {
       alert('Web Serial API is not supported in this browser (Use Chrome/Edge).');
@@ -34,7 +37,7 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
     try {
       // @ts-ignore - TypeScript might not have the latest Web Serial types by default
       const port = await navigator.serial.requestPort();
-      await port.open({ baudRate: 9600 }); // Make sure your Arduino uses Serial.begin(9600)
+      await port.open({ baudRate: 9600 });
       setSerialConnected(true);
 
       const textDecoder = new TextDecoderStream();
@@ -43,7 +46,6 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
 
       console.log('Serial port connected!');
 
-      // Run reading loop in the background
       const readLoop = async () => {
         try {
           while (true) {
@@ -52,11 +54,10 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
               reader.releaseLock();
               break;
             }
-            if (value) {
-              // Parse the string and ignore whitespace/newlines like \r \n
+            // Only process serial input if in BUZZER mode
+            if (value && mode === 'BUZZER') {
               const sanitized = value.trim();
               if (sanitized) {
-                // We emit each character or command
                 onInput(sanitized.toLowerCase());
               }
             }
@@ -73,7 +74,7 @@ export const useHardwareInput = (onInput: (key: string) => void) => {
       console.error('Serial connection error:', error);
       setSerialConnected(false);
     }
-  }, [onInput]);
+  }, [onInput, mode]);
 
   return { connectSerial, serialConnected, isSerialSupported };
 };

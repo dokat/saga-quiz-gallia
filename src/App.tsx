@@ -27,6 +27,7 @@ function App() {
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
+  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>('TOUCHSCREEN');
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -165,7 +166,7 @@ function App() {
     }
   }, [gameState, handleResponse, handleStartApp, resetGame, handleScoreScreenEnded, handleIntermediateScoreEnded]);
 
-  const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput);
+  const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput, appMode);
 
   if (sequences.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
@@ -186,6 +187,8 @@ function App() {
           onConnectSerial={connectSerial}
           serialConnected={serialConnected}
           isSerialSupported={isSerialSupported}
+          appMode={appMode}
+          setAppMode={setAppMode}
         />
       )}
 
