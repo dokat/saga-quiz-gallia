@@ -236,13 +236,23 @@ function App() {
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
         >
-          <VideoPlayer
-            src={`./videos/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
-            onEnded={gameState === 'QUESTION' ? handleQuestionEnded : undefined}
-            loop={false}
-          />
+          {gameState === 'QUESTION' ? (
+            <VideoPlayer
+              src={`./videos/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
+              onEnded={handleQuestionEnded}
+              loop={false}
+            />
+          ) : (
+            <motion.img
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              src={`./images/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
+              className="absolute inset-0 w-full h-full object-cover"
+              alt=""
+            />
+          )}
 
-          {gameState === 'RESPONSE' && appMode === 'TOUCHSCREEN' && (
+          {gameState === 'RESPONSE' && (
             <DraggableTeams
               teams={teams}
               question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
