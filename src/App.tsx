@@ -3,13 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GameState, Team, Sequence } from './types';
 import InitScreen from './components/screens/InitScreen';
 import WaitingScreen from './components/screens/WaitingScreen';
-import CountdownScreen from './components/screens/CountdownScreen';
 import { motion } from 'motion/react';
 import VideoPlayer from './components/VideoPlayer';
 import { DraggableTeams } from './components/DraggableTeams';
 import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
 import { IntermediateScoreScreen } from './components/screens/IntermediateScoreScreen';
 import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
+import { useHardwareInput } from './hooks/useHardwareInput';
 
 // const basePath = import.meta.env.BASE_URL.endsWith('/')
 //   ? import.meta.env.BASE_URL
@@ -136,6 +136,37 @@ function App() {
     setGameState('WAITING');
   }, []);
 
+  // Handle hardware inputs (Keyboard & Serial)
+  const handleHardwareInput = useCallback((key: string) => {
+    console.log('Hardware input received:', key);
+
+    // Map keys to game actions here based on gameState
+    if (gameState === 'RESPONSE') {
+      // Example Key Mapping:
+      // Team 1 (index 0): 1=Zone 0, 2=Zone 1, 3=Zone 2, 4=Zone 3
+      // Team 2 (index 1): q=Zone 0, w=Zone 1, e=Zone 2, r=Zone 3
+
+      const team1Keys = ['1', '2', '3', '4'];
+      const team2Keys = ['q', 'w', 'e', 'r'];
+
+      if (team1Keys.includes(key)) {
+        handleResponse(team1Keys.indexOf(key), 0);
+      } else if (team2Keys.includes(key)) {
+        handleResponse(team2Keys.indexOf(key), 1);
+      }
+    } else if (gameState === 'INIT' && key === ' ') {
+      handleStartApp();
+    } else if (gameState === 'WAITING' && key === ' ') {
+      resetGame();
+    } else if (gameState === 'SCORE_SCREEN' && key === ' ') {
+      handleScoreScreenEnded();
+    } else if (gameState === 'INTERMEDIATE_SCORE' && key === ' ') {
+      handleIntermediateScoreEnded();
+    }
+  }, [gameState, handleResponse, handleStartApp, resetGame, handleScoreScreenEnded, handleIntermediateScoreEnded]);
+
+  const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput);
+
   if (sequences.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
   }
@@ -150,7 +181,12 @@ function App() {
 
       {/* 0. INIT STATE */}
       {gameState === 'INIT' && (
-        <InitScreen onStart={handleStartApp} />
+        <InitScreen
+          onStart={handleStartApp}
+          onConnectSerial={connectSerial}
+          serialConnected={serialConnected}
+          isSerialSupported={isSerialSupported}
+        />
       )}
 
       {/* 1. WAITING STATE */}
@@ -167,14 +203,9 @@ function App() {
         >
           <VideoPlayer
             src={`./videos/${sequences[currentSequenceIdx].sequence}`}
-            onEnded={() => setGameState('COUNTDOWN')}
+            onEnded={() => setGameState('QUESTION_TITLE')}
           />
         </motion.div>
-      )}
-
-      {/* 2.5 TITLE STATE (COUNTDOWN) */}
-      {gameState === 'COUNTDOWN' && (
-        <CountdownScreen onStartQuestion={() => setGameState('QUESTION_TITLE')} />
       )}
 
       {/* 3. QUESTION TITLE STATE */}
