@@ -22,7 +22,7 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
       }
       onInput(e.key.toLowerCase());
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onInput, mode]);
@@ -41,7 +41,7 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
       setSerialConnected(true);
 
       const textDecoder = new TextDecoderStream();
-      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+      port.readable.pipeTo(textDecoder.writable);
       const reader = textDecoder.readable.getReader();
 
       console.log('Serial port connected!');
