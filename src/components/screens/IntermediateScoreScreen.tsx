@@ -1,7 +1,6 @@
 import { motion } from 'motion/react';
 import VideoPlayer from '../VideoPlayer';
 import { useState } from 'react';
-import { TeamUI } from '../TeamUI';
 import type { Team } from '../../types';
 
 interface IntermediateScoreScreenProps {
@@ -10,11 +9,10 @@ interface IntermediateScoreScreenProps {
 }
 
 export const IntermediateScoreScreen = ({ onClick, teams }: IntermediateScoreScreenProps) => {
-    const [showScore, setShowScore] = useState(false);
+    const [showScore, setShowScore] = useState(true);
 
     return (
         <>
-            {showScore && <TeamUI teams={teams} />}
             <motion.div
                 key="intermediate-score"
                 initial={{ opacity: 0 }}
@@ -28,6 +26,51 @@ export const IntermediateScoreScreen = ({ onClick, teams }: IntermediateScoreScr
                     onEnded={() => setShowScore(true)}
                 />
             </motion.div>
+            {showScore && <div className="absolute inset-0 pointer-events-none z-10 ">
+                {teams.map((_, index) => (
+                    <motion.div
+                        key={`colonne-${index}`}
+                        initial={{
+                            y: 300,
+                            opacity: 0,
+                            scale: 0.9
+                        }}
+                        animate={{
+                            y: 0,
+                            opacity: 1,
+                            scale: 1
+                        }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 70,
+                            damping: 12,
+                            delay: index * 0.4,
+                            duration: 1.5
+                        }}
+                        className={`fixed bottom-[146px] ${index === 0 ? 'left-[500px]' : 'right-[500px]'} flex flex-col items-center`}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{
+                                delay: (index * 0.4) + 1.2,
+                                type: 'spring',
+                                stiffness: 200,
+                                damping: 15
+                            }}
+                            className="text-8xl font-black text-white italic"
+                        >
+                            {teams[index].score}
+                        </motion.div>
+                        <img
+                            src={`./images/colonne_final_${index + 1}.png`}
+                            className="w-32 h-auto pointer-events-none select-none"
+                            alt=""
+                            draggable={false}
+                        />
+                    </motion.div>
+                ))}
+            </div>}
         </>
     )
 }   
