@@ -38,12 +38,12 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
           <motion.div
             key={`colonne-${index}`}
             initial={{
-              y: 400,
+              y: 800,
               opacity: 0,
               scale: 0.9
             }}
             animate={{
-              y: 0,
+              y: 300,
               opacity: 1,
               scale: 1
             }}
@@ -58,7 +58,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
           >
             <img
               src={`./images/colonne_inter_${index + 1}.png`}
-              className="w-32 h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+              className="w-32 h-auto "
               alt=""
             />
           </motion.div>
@@ -67,7 +67,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 
 
       {/* Team Avatars to Drag */}
-      <div className="absolute inset-0 flex justify-between items-center px-8 pointer-events-none z-50">
+      <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none z-50">
         {teams.map((_team, teamIdx) => (
           <motion.div
             key={teamIdx}
@@ -94,7 +94,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             style={{ touchAction: 'none' }}
             className='pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing'
           >
-            <img className="w-24 h-24 mb-2" src={`./images/logo_team_fill_${teamIdx + 1}.png`} />
+            <img className="w-24" src={`./images/logo_team_fill_${teamIdx + 1}.png`} />
           </motion.div>
         ))}
       </div>
