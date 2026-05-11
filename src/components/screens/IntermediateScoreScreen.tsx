@@ -9,7 +9,7 @@ interface IntermediateScoreScreenProps {
 }
 
 export const IntermediateScoreScreen = ({ onClick, teams }: IntermediateScoreScreenProps) => {
-    const [showScore, setShowScore] = useState(true);
+    const [showScore, setShowScore] = useState(false);
 
     return (
         <>
@@ -44,7 +44,7 @@ export const IntermediateScoreScreen = ({ onClick, teams }: IntermediateScoreScr
                             type: 'spring',
                             stiffness: 70,
                             damping: 12,
-                            delay: index * 0.4,
+                            delay: 0,
                             duration: 1.5
                         }}
                         className={`fixed bottom-[146px] ${index === 0 ? 'left-[500px]' : 'right-[500px]'} flex flex-col items-center`}
