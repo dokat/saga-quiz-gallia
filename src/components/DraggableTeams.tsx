@@ -43,7 +43,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               scale: 0.9
             }}
             animate={{
-              y: 300,
+              y: 350,
               opacity: 1,
               scale: 1
             }}
@@ -94,7 +94,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             style={{ touchAction: 'none' }}
             className='pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing'
           >
-            <img className="w-24" src={`./images/logo_team_fill_${teamIdx + 1}.png`} />
+            <img className="w-24 pointer-events-none select-none" src={`./images/logo_team_fill_${teamIdx + 1}.png`} draggable={false} />
           </motion.div>
         ))}
       </div>
