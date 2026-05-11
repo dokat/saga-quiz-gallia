@@ -11,11 +11,6 @@ import { IntermediateScoreScreen } from './components/screens/IntermediateScoreS
 import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
 import { useHardwareInput } from './hooks/useHardwareInput';
 
-// const basePath = import.meta.env.BASE_URL.endsWith('/')
-//   ? import.meta.env.BASE_URL
-//   : `${import.meta.env.BASE_URL}/`;
-// console.log('basePath ', basePath);
-
 function App() {
   const [gameState, setGameState] = useState<GameState>('INIT');
   const [teams, setTeams] = useState<Team[]>([
