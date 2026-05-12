@@ -10,14 +10,15 @@ import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
 import { IntermediateScoreScreen } from './components/screens/IntermediateScoreScreen';
 import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
 import { useHardwareInput } from './hooks/useHardwareInput';
+import NextButton from './components/NextButton';
 
 function App() {
-  const [gameState, setGameState] = useState<GameState>('INIT');
+  const [gameState, setGameState] = useState<GameState>('SEQUENCE_TITLE');
   const [teams, setTeams] = useState<Team[]>([
     { name: 'Équipe 1', score: 0, color: 'bg-red-500' },
     { name: 'Équipe 2', score: 0, color: 'bg-blue-500' },
   ]);
-  const [currentSequenceIdx, setCurrentSequenceIdx] = useState(0);
+  const [currentSequenceIdx, setCurrentSequenceIdx] = useState(3);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
@@ -72,15 +73,19 @@ function App() {
       setGameState('RESULT_FEEDBACK');
 
       if (isCorrect) {
-        setTeams((prev) => {
-          const newTeams = [...prev];
-          newTeams[teamIndex] = { ...newTeams[teamIndex], score: newTeams[teamIndex].score + 1 };
-          return newTeams;
-        });
+        handleAddScore(teamIndex);
       }
     },
     [currentSequenceIdx, currentQuestionIdx, sequences]
   );
+
+  const handleAddScore = useCallback((teamIndex: number) => {
+    setTeams((prev) => {
+      const newTeams = [...prev];
+      newTeams[teamIndex] = { ...newTeams[teamIndex], score: newTeams[teamIndex].score + 1 };
+      return newTeams;
+    });
+  }, []);
 
   const handleResultFeedbackEnded = useCallback(() => {
     if (lastResult === 'TRUE') {
@@ -247,12 +252,19 @@ function App() {
           )}
 
           {gameState === 'RESPONSE' && (
-            <DraggableTeams
-              teams={teams}
-              question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
-              containerRef={containerRef}
-              onResponse={handleResponse}
-            />
+            <>
+              <DraggableTeams
+                teams={teams}
+                question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
+                containerRef={containerRef}
+                onResponse={handleResponse}
+                addScore={handleAddScore}
+              />
+              {(!sequences[currentSequenceIdx].questions[currentQuestionIdx].zones ||
+                sequences[currentSequenceIdx].questions[currentQuestionIdx].zones.length === 0) && (
+                  <NextButton onClick={handleIntermediateScoreEnded} />
+                )}
+            </>
           )}
         </motion.div>
       )}

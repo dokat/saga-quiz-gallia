@@ -1,7 +1,6 @@
 export type GameState =
   | 'INIT' // Initial state to handle autoplay policy
   | 'WAITING' // Initial waiting video
-  | 'COUNTDOWN' // Countdown before showing question
   | 'SEQUENCE_TITLE' // Playing sequence title video
   | 'QUESTION_TITLE' // Playing question title video
   | 'QUESTION' // Playing question video
