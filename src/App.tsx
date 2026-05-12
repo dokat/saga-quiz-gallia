@@ -13,12 +13,12 @@ import { useHardwareInput } from './hooks/useHardwareInput';
 import NextButton from './components/NextButton';
 
 function App() {
-  const [gameState, setGameState] = useState<GameState>('SEQUENCE_TITLE');
+  const [gameState, setGameState] = useState<GameState>('INIT');
   const [teams, setTeams] = useState<Team[]>([
     { name: 'Équipe 1', score: 0, color: 'bg-red-500' },
     { name: 'Équipe 2', score: 0, color: 'bg-blue-500' },
   ]);
-  const [currentSequenceIdx, setCurrentSequenceIdx] = useState(3);
+  const [currentSequenceIdx, setCurrentSequenceIdx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
