@@ -69,10 +69,18 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 
 
       {/* Team Avatars to Drag */}
-      <div className="absolute inset-0 flex justify-between px-10 pointer-events-none z-50">
+      <div className="absolute inset-0 flex justify-between items-start pt-[350px] px-10 pointer-events-none z-50">
         {teams.map((_team, teamIdx) => (
           <motion.div
             key={teamIdx}
+            initial={{ y: 500, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{
+              type: 'spring',
+              stiffness: 70,
+              damping: 12,
+              delay: teamIdx * 0.4 + 0.5,
+            }}
             drag={!!question.zones && question.zones.length > 0}
             dragConstraints={containerRef}
             dragElastic={0.05}
