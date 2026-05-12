@@ -20,20 +20,22 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   return (
     <div className="absolute inset-0 bg">
       {/* Visual debug zones */}
-      {/* <div className="absolute inset-0 pointer-events-none">
-        {question.zones.map((zone) => (
-          <div
-            key={zone.id}
-            className="absolute border-2 border-dashed border-white/5 rounded-3xl"
-            style={{
-              left: `${zone.x}px`,
-              top: `${zone.y}px`,
-              width: `${zone.w}px`,
-              height: `${zone.h}px`,
-            }}
-          />
-        ))}
-      </div> */}
+      {/* {question.zones && question.zones.length > 0 && (
+        <div className="absolute inset-0 pointer-events-none">
+          {question.zones.map((zone) => (
+            <div
+              key={zone.id}
+              className="absolute border-2 border-dashed border-white/5 rounded-3xl"
+              style={{
+                left: `${zone.x}px`,
+                top: `${zone.y}px`,
+                width: `${zone.w}px`,
+                height: `${zone.h}px`,
+              }}
+            />
+          ))}
+        </div>
+      )} */}
 
       <div className="absolute inset-0 pointer-events-none">
         {teams.map((_, index) => (
@@ -45,7 +47,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               scale: 0.9
             }}
             animate={{
-              y: 200,
+              y: 320,
               opacity: 1,
               scale: 1
             }}
@@ -69,19 +71,11 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 
 
       {/* Team Avatars to Drag */}
-      <div className="absolute inset-0 flex justify-between items-start pt-[350px] px-10 pointer-events-none z-50">
+      <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none z-50">
         {teams.map((_team, teamIdx) => (
           <motion.div
             key={teamIdx}
-            initial={{ y: 500, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{
-              type: 'spring',
-              stiffness: 70,
-              damping: 12,
-              delay: teamIdx * 0.4 + 0.5,
-            }}
-            drag={!!question.zones && question.zones.length > 0}
+            drag
             dragConstraints={containerRef}
             dragElastic={0.05}
             dragSnapToOrigin
@@ -90,7 +84,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               const screenX = info.point.x; // / window.innerWidth;
               const screenY = info.point.y; // / window.innerHeight;
 
-              if (!question.zones) return;
+              if (!question.zones || question.zones.length === 0) return;
               question.zones.forEach((zone, zIdx) => {
                 if (
                   screenX >= zone.x &&
@@ -104,19 +98,9 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             }}
             onTap={() => { if (!question.zones || question.zones.length === 0) addScore(teamIdx) }}
             style={{ touchAction: 'none' }}
-            className='pointer-events-auto w-32 h-48 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing'
+            className='pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing'
           >
             <img className="w-24 pointer-events-none select-none" src={`./images/logo_team_fill_${teamIdx + 1}.png`} draggable={false} />
-            {(!question.zones || question.zones.length === 0) && (
-              <motion.span
-                key={_team.score}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-7xl font-black text-white italic mt-2 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
-              >
-                {_team.score}
-              </motion.span>
-            )}
           </motion.div>
         ))}
       </div>
