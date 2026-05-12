@@ -37,7 +37,6 @@ function App() {
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   useEffect(() => {
-    // fetch(`${basePath}questions.json`)
     fetch(`./questions.json`)
       .then((res) => res.json())
       .then((data) => setSequences(data as Sequence[]))
@@ -120,7 +119,7 @@ function App() {
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   const handleScoreScreenEnded = useCallback(() => {
-    setGameState('DEGUSTATION_VIDEO');
+    setGameState('FIN');
   }, []);
 
   const handleStartApp = useCallback(() => {
@@ -296,17 +295,17 @@ function App() {
         <FinalScoreScreen onClick={handleScoreScreenEnded} teams={teams} />
       )}
 
-      {/* 10. DEGUSTATION VIDEO STATE */}
-      {gameState === 'DEGUSTATION_VIDEO' && (
+      {/* 10. FINAL VIDEO STATE */}
+      {gameState === 'FIN' && (
         <motion.div
-          key="degustation-video"
+          key="final-video"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src="./videos/4_TITRAGE_DEGUSTATION.mp4"
+            src="./videos/0_MERCI.mp4"
             onEnded={() => setGameState('WAITING')}
           />
         </motion.div>
