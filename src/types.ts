@@ -10,7 +10,7 @@ export type GameState =
   | 'ANSWER_VIDEO' // Playing the actual answer video
   | 'INTERMEDIATE_SCORE' // Showing score between questions
   | 'SCORE_SCREEN' // Final score screen
-  | 'DEGUSTATION_VIDEO'; // Final degustation video before reset
+  | 'FIN'; // Final degustation video before reset
 
 export type LastResult = 'TRUE' | 'FALSE' | null;
 
@@ -21,7 +21,7 @@ export interface Sequence {
 
 export interface Question {
   correctAnswerIndex: number | number[]; // 0-3
-  zones: {
+  zones?: {
     id: string;
     label: string;
     // Normalized coordinates (0-1) for 4 zones on screen
