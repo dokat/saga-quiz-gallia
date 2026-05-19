@@ -145,6 +145,22 @@ function App() {
     setGameState('WAITING');
   }, []);
 
+  const restartApp = useCallback(() => {
+    setTeams((prev) => prev.map((t) => ({ ...t, score: 0 })));
+    setCurrentSequenceIdx(0);
+    setCurrentQuestionIdx(0);
+    setGameState('INIT');
+  }, []);
+
+  const lastClickTime = useRef<number>(0);
+  const handleRestartClick = useCallback(() => {
+    const now = Date.now();
+    if (now - lastClickTime.current < 300) {
+      restartApp();
+    }
+    lastClickTime.current = now;
+  }, [restartApp]);
+
   // Handle hardware inputs (Keyboard & Serial)
   const handleHardwareInput = useCallback((key: string) => {
     console.log('Hardware input received:', key);
@@ -347,6 +363,14 @@ function App() {
           />
         </motion.div>
       )}
+
+      {/* Invisible restart button (200x200 px, top-left) */}
+      <button
+        onClick={handleRestartClick}
+        onDoubleClick={restartApp}
+        className="absolute top-0 left-0 w-[200px] h-[200px] bg-transparent border-none outline-none cursor-default z-[9999] pointer-events-auto"
+        aria-label="Restart Application"
+      />
     </div>
   );
 }
