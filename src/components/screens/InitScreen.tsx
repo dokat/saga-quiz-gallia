@@ -7,6 +7,7 @@ interface InitScreenProps {
   isSerialSupported?: boolean;
   appMode: 'TOUCHSCREEN' | 'BUZZER';
   setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
+  serialPortName?: string | null;
 }
 
 export const InitScreen = ({
@@ -15,7 +16,8 @@ export const InitScreen = ({
   serialConnected,
   isSerialSupported,
   appMode,
-  setAppMode
+  setAppMode,
+  serialPortName
 }: InitScreenProps) => {
   return (
     <motion.div
@@ -54,7 +56,7 @@ export const InitScreen = ({
               : 'text-white/40 hover:text-white/70 hover:bg-white/5'
             }`}
         >
-          Buzzer
+          Buzzer{serialConnected && serialPortName ? ` (${serialPortName})` : ''}
           {appMode === 'BUZZER' && serialConnected && (
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
           )}

@@ -182,7 +182,7 @@ function App() {
     }
   }, [gameState, visibleTeams, appMode]);
 
-  const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput, appMode);
+  const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(handleHardwareInput, appMode);
 
   if (sequences.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
@@ -205,6 +205,7 @@ function App() {
           isSerialSupported={isSerialSupported}
           appMode={appMode}
           setAppMode={setAppMode}
+          serialPortName={serialPortName}
         />
       )}
 

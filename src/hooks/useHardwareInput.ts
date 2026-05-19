@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCREEN' | 'BUZZER') => {
   const [isSerialSupported, setIsSerialSupported] = useState(false);
   const [serialConnected, setSerialConnected] = useState(false);
+  const [serialPortName, setSerialPortName] = useState<string | null>(null);
 
   useEffect(() => {
     if ('serial' in navigator) {
@@ -40,6 +41,19 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
       await port.open({ baudRate: 9600 });
       setSerialConnected(true);
 
+      const info = port.getInfo();
+      let portName = 'Périphérique USB';
+      if (info.usbVendorId !== undefined && info.usbProductId !== undefined) {
+        const vid = info.usbVendorId.toString(16).padStart(4, '0').toUpperCase();
+        const pid = info.usbProductId.toString(16).padStart(4, '0').toUpperCase();
+        if (info.usbVendorId === 0x2341) {
+          portName = `Arduino (0x${vid})`;
+        } else {
+          portName = `USB (0x${vid}:0x${pid})`;
+        }
+      }
+      setSerialPortName(portName);
+
       const textDecoder = new TextDecoderStream();
       port.readable.pipeTo(textDecoder.writable);
       const reader = textDecoder.readable.getReader();
@@ -66,6 +80,7 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
           console.error('Serial read error:', error);
         } finally {
           setSerialConnected(false);
+          setSerialPortName(null);
         }
       };
 
@@ -73,8 +88,9 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
     } catch (error) {
       console.error('Serial connection error:', error);
       setSerialConnected(false);
+      setSerialPortName(null);
     }
   }, [onInput, mode]);
 
-  return { connectSerial, serialConnected, isSerialSupported };
+  return { connectSerial, serialConnected, isSerialSupported, serialPortName };
 };
