@@ -24,6 +24,15 @@ function App() {
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
   const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>('TOUCHSCREEN');
+  const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
+
+  useEffect(() => {
+    if (appMode === 'BUZZER' && gameState === 'RESPONSE') {
+      setVisibleTeams([false, false]);
+    } else {
+      setVisibleTeams([true, true]);
+    }
+  }, [gameState, appMode]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -142,6 +151,16 @@ function App() {
 
     // Map keys to game actions here based on gameState
     if (gameState === 'RESPONSE') {
+      if (appMode === 'BUZZER') {
+        if (key === '0') {
+          setVisibleTeams([true, false]);
+          return;
+        } else if (key === '1') {
+          setVisibleTeams([false, true]);
+          return;
+        }
+      }
+
       // Example Key Mapping:
       // Team 1 (index 0): 1=Zone 0, 2=Zone 1, 3=Zone 2, 4=Zone 3
       // Team 2 (index 1): q=Zone 0, w=Zone 1, e=Zone 2, r=Zone 3
@@ -150,9 +169,13 @@ function App() {
       const team2Keys = ['q', 'w', 'e', 'r'];
 
       if (team1Keys.includes(key)) {
-        handleResponse(team1Keys.indexOf(key), 0);
+        if (visibleTeams[0]) {
+          handleResponse(team1Keys.indexOf(key), 0);
+        }
       } else if (team2Keys.includes(key)) {
-        handleResponse(team2Keys.indexOf(key), 1);
+        if (visibleTeams[1]) {
+          handleResponse(team2Keys.indexOf(key), 1);
+        }
       }
     } else if (gameState === 'INIT' && key === ' ') {
       handleStartApp();
@@ -163,7 +186,7 @@ function App() {
     } else if (gameState === 'INTERMEDIATE_SCORE' && key === ' ') {
       handleIntermediateScoreEnded();
     }
-  }, [gameState, handleResponse, handleStartApp, resetGame, handleScoreScreenEnded, handleIntermediateScoreEnded]);
+  }, [gameState, handleResponse, handleStartApp, resetGame, handleScoreScreenEnded, handleIntermediateScoreEnded, visibleTeams, appMode]);
 
   const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput, appMode);
 
@@ -259,6 +282,8 @@ function App() {
                 containerRef={containerRef}
                 onResponse={handleResponse}
                 addScore={handleAddScore}
+                visibleTeams={visibleTeams}
+                appMode={appMode}
               />
               {(!sequences[currentSequenceIdx].questions[currentQuestionIdx].zones ||
                 sequences[currentSequenceIdx].questions[currentQuestionIdx].zones.length === 0) && (
