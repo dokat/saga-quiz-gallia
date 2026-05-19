@@ -165,15 +165,18 @@ function App() {
   // Handle hardware inputs (Keyboard & Serial)
   const handleHardwareInput = useCallback((key: string) => {
     console.log('Hardware input received:', key);
+    console.log('Game state:', gameState);
+    console.log('App mode:', appMode);
+    console.log('Visible teams:', visibleTeams);
 
     // Map keys to game actions here based on gameState
     if (gameState === 'RESPONSE') {
       if (appMode === 'BUZZER') {
-        if (key === '0') {
+        if (key.includes('0')) {
           console.log('Team 1 selected');
           setVisibleTeams([true, false]);
           return;
-        } else if (key === '1') {
+        } else if (key.includes('1')) {
           console.log('Team 2 selected');
           setVisibleTeams([false, true]);
           return;
