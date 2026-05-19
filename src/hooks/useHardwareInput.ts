@@ -1,9 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCREEN' | 'BUZZER') => {
   const [isSerialSupported, setIsSerialSupported] = useState(false);
   const [serialConnected, setSerialConnected] = useState(false);
   const [serialPortName, setSerialPortName] = useState<string | null>(null);
+
+  // Keep a mutable ref that always points to the latest onInput callback.
+  // This prevents stale closures in the long-running readLoop stream reader.
+  const onInputRef = useRef(onInput);
+  onInputRef.current = onInput;
 
   useEffect(() => {
     if ('serial' in navigator) {
@@ -21,12 +26,12 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
         return;
       }
-      onInput(e.key.toLowerCase());
+      onInputRef.current(e.key.toLowerCase());
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onInput, mode]);
+  }, [mode]);
 
   // 2. Web Serial API Support (Enabled only in BUZZER mode)
   const connectSerial = useCallback(async () => {
@@ -72,7 +77,7 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
             if (value && mode === 'BUZZER') {
               const sanitized = value.trim();
               if (sanitized) {
-                onInput(sanitized.toLowerCase());
+                onInputRef.current(sanitized.toLowerCase());
               }
             }
           }
@@ -90,7 +95,7 @@ export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCR
       setSerialConnected(false);
       setSerialPortName(null);
     }
-  }, [onInput, mode]);
+  }, [mode]);
 
   return { connectSerial, serialConnected, isSerialSupported, serialPortName };
 };
