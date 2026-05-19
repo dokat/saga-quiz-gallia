@@ -23,7 +23,7 @@ function App() {
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
-  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>('TOUCHSCREEN');
+  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>('BUZZER');
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
 
   useEffect(() => {
