@@ -172,6 +172,12 @@ function App() {
     // Map keys to game actions here based on gameState
     if (gameState === 'RESPONSE') {
       if (appMode === 'BUZZER') {
+        // If a team has already buzzed in (at least one is visible), ignore other buzzes
+        if (visibleTeams.includes(true)) {
+          console.log('A team has already buzzed in, ignoring input.');
+          return;
+        }
+
         if (key.includes('0')) {
           console.log('Team 1 selected');
           setVisibleTeams([true, false]);
