@@ -137,6 +137,7 @@ function App() {
   }, []);
 
   const handleStartApp = useCallback(() => {
+    console.log('Starting app in ', appMode);
     if (document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable full-screen mode: ${err.message}`);
@@ -169,40 +170,17 @@ function App() {
     if (gameState === 'RESPONSE') {
       if (appMode === 'BUZZER') {
         if (key === '0') {
+          console.log('Team 1 selected');
           setVisibleTeams([true, false]);
           return;
         } else if (key === '1') {
+          console.log('Team 2 selected');
           setVisibleTeams([false, true]);
           return;
         }
       }
-
-      // Example Key Mapping:
-      // Team 1 (index 0): 1=Zone 0, 2=Zone 1, 3=Zone 2, 4=Zone 3
-      // Team 2 (index 1): q=Zone 0, w=Zone 1, e=Zone 2, r=Zone 3
-
-      const team1Keys = ['1', '2', '3', '4'];
-      const team2Keys = ['q', 'w', 'e', 'r'];
-
-      if (team1Keys.includes(key)) {
-        if (visibleTeams[0]) {
-          handleResponse(team1Keys.indexOf(key), 0);
-        }
-      } else if (team2Keys.includes(key)) {
-        if (visibleTeams[1]) {
-          handleResponse(team2Keys.indexOf(key), 1);
-        }
-      }
-    } else if (gameState === 'INIT' && key === ' ') {
-      handleStartApp();
-    } else if (gameState === 'WAITING' && key === ' ') {
-      resetGame();
-    } else if (gameState === 'SCORE_SCREEN' && key === ' ') {
-      handleScoreScreenEnded();
-    } else if (gameState === 'INTERMEDIATE_SCORE' && key === ' ') {
-      handleIntermediateScoreEnded();
     }
-  }, [gameState, handleResponse, handleStartApp, resetGame, handleScoreScreenEnded, handleIntermediateScoreEnded, visibleTeams, appMode]);
+  }, [gameState, visibleTeams, appMode]);
 
   const { connectSerial, serialConnected, isSerialSupported } = useHardwareInput(handleHardwareInput, appMode);
 
