@@ -170,26 +170,37 @@ function App() {
     console.log('Visible teams:', visibleTeams);
 
     // Map keys to game actions here based on gameState
-    if (gameState === 'RESPONSE') {
-      if (appMode === 'BUZZER') {
-        // If a team has already buzzed in (at least one is visible), ignore other buzzes
-        if (visibleTeams.includes(true)) {
-          console.log('A team has already buzzed in, ignoring input.');
+    if (gameState === 'RESPONSE' && appMode === 'BUZZER') {
+      const lowerKey = key.toLowerCase();
+      let zoneIndex = -1;
+      if (lowerKey.includes('a')) zoneIndex = 0;
+      else if (lowerKey.includes('b')) zoneIndex = 1;
+      else if (lowerKey.includes('c')) zoneIndex = 2;
+      else if (lowerKey.includes('d')) zoneIndex = 3;
+      else if (lowerKey.includes('e')) zoneIndex = 4;
+      else if (lowerKey.includes('f')) zoneIndex = 5;
+      // If a team has already buzzed in (at least one is visible)
+      if (visibleTeams.includes(true)) {
+        if (zoneIndex !== -1) {
+          const answeringTeamIndex = visibleTeams.indexOf(true);
+          handleResponse(zoneIndex, answeringTeamIndex);
           return;
         }
+        console.log('A team has already buzzed in, ignoring non-answer input.');
+        return;
+      }
 
-        if (key.includes('0')) {
-          console.log('Team 1 selected');
-          setVisibleTeams([true, false]);
-          return;
-        } else if (key.includes('1')) {
-          console.log('Team 2 selected');
-          setVisibleTeams([false, true]);
-          return;
-        }
+      if (key.includes('1')) {
+        console.log('Team 1 selected');
+        setVisibleTeams([true, false]);
+        return;
+      } else if (key.includes('2')) {
+        console.log('Team 2 selected');
+        setVisibleTeams([false, true]);
+        return;
       }
     }
-  }, [gameState, visibleTeams, appMode]);
+  }, [gameState, visibleTeams, appMode, handleResponse]);
 
   const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(handleHardwareInput, appMode);
 
