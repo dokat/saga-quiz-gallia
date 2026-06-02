@@ -11,6 +11,7 @@ import { IntermediateScoreScreen } from './components/screens/IntermediateScoreS
 import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
 import { useHardwareInput } from './hooks/useHardwareInput';
 import NextButton from './components/NextButton';
+import { useMidi } from './hooks/useMidi';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('INIT');
@@ -203,6 +204,8 @@ function App() {
   }, [gameState, visibleTeams, appMode, handleResponse]);
 
   const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(handleHardwareInput, appMode);
+
+  const { inputs: _midiInputs } = useMidi(handleHardwareInput);
 
   if (sequences.length === 0) {
     return <div className="w-screen h-screen bg-zinc-900" />;
