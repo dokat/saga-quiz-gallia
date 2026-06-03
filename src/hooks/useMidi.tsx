@@ -45,7 +45,7 @@ export function useMidi(onInput: (key: string) => void) {
             };
 
             console.log("MIDI:", message);
-            if (onInputRef.current) {
+            if (onInputRef.current && message.type === 0x80) {
                 onInputRef.current(message.note.toString());
             }
         }
