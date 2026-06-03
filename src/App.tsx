@@ -170,6 +170,37 @@ function App() {
     console.log('App mode:', appMode);
     console.log('Visible teams:', visibleTeams);
 
+    if (key.toLowerCase() == 'escape') {
+      switch (gameState) {
+        case 'RESULT_FEEDBACK':
+          handleResultFeedbackEnded();
+          break;
+        case 'ANSWER_VIDEO':
+          handleAnswerVideoEnded();
+          break;
+        case 'INTERMEDIATE_SCORE':
+          handleIntermediateScoreEnded();
+          break;
+        case 'SCORE_SCREEN':
+          handleScoreScreenEnded();
+          break;
+        case 'WAITING':
+          restartApp();
+          break;
+        case 'QUESTION_TITLE':
+          handleQuestionTitleEnded();
+          break;
+        case 'QUESTION':
+          handleQuestionEnded();
+          break;
+        case 'FIN':
+          restartApp();
+          break;
+        default:
+          break;
+      }
+    }
+
     // Map keys to game actions here based on gameState
     if (gameState === 'RESPONSE' && appMode === 'BUZZER') {
       const lowerKey = key.toLowerCase();
