@@ -424,5 +424,16 @@
         ]
       }
     ]
+  },
+  {
+    "sequence": "4_TITRAGE_DEGUSTATION.mp4",
+    "questions": [
+      {
+        "correctAnswerIndex": 1
+      },
+      {
+        "correctAnswerIndex": 2
+      }
+    ]
   }
 ]
