@@ -10,6 +10,7 @@ interface DraggableTeamsProps {
   addScore: (teamIndex: number) => void;
   visibleTeams: boolean[];
   appMode: 'TOUCHSCREEN' | 'BUZZER';
+  videoFormat: '16_9' | '16_10';
 }
 
 export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
@@ -20,6 +21,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   addScore,
   visibleTeams,
   appMode,
+  videoFormat,
 }) => {
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
@@ -83,7 +85,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               }}
             >
               <img
-                src={`./images/colonne_inter_${index + 1}.png`}
+                src={`./images/${videoFormat}/colonne_inter_${index + 1}.png`}
                 className="w-32 h-auto "
                 alt=""
               />
@@ -168,7 +170,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               >
                 <img
                   className="w-24 pointer-events-none select-none"
-                  src={`./images/logo_team_fill_${teamIdx + 1}.png`}
+                  src={`./images/${videoFormat}/logo_team_fill_${teamIdx + 1}.png`}
                   draggable={false}
                 />
               </motion.div>

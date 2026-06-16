@@ -69,7 +69,7 @@ export const IntermediateScoreScreen = ({
                 {teams[index].score}
               </motion.div>
               <img
-                src={`./images/colonne_final_${index + 1}.png`}
+                src={`./images/${videoFormat}/colonne_final_${index + 1}.png`}
                 className="w-32 h-auto pointer-events-none select-none"
                 alt=""
                 draggable={false}

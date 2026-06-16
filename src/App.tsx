@@ -340,7 +340,7 @@ function App() {
             <motion.img
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              src={`./images/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
+              src={`./images/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
               className="absolute inset-0 w-full h-full object-cover"
               alt=""
             />
@@ -356,6 +356,7 @@ function App() {
                 addScore={handleAddScore}
                 visibleTeams={visibleTeams}
                 appMode={appMode}
+                videoFormat={videoFormat}
               />
               {(!sequences[currentSequenceIdx].questions[currentQuestionIdx].zones ||
                 sequences[currentSequenceIdx].questions[currentQuestionIdx].zones.length === 0) && (
