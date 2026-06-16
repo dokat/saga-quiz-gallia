@@ -3,9 +3,10 @@ import type { Team } from '../types';
 
 interface FinalTeamScoreProps {
   teams: Team[];
+  videoFormat: string;
 }
-export const FinalTeamScore: React.FC<FinalTeamScoreProps> = ({ teams }) => (
-  <div className="fixed bottom-100 left-0 w-full pointer-events-none select-none z-100">
+export const FinalTeamScore: React.FC<FinalTeamScoreProps> = ({ teams, videoFormat }) => (
+  <div className={`fixed ${videoFormat === '16_10' ? 'bottom-115' : 'bottom-100'} left-0 w-full pointer-events-none select-none z-100`}>
     {/* Team 1 (Left) */}
     {teams[0] && (
       <motion.div

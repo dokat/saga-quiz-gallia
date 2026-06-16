@@ -15,7 +15,7 @@ export const FinalScoreScreen = ({ onClick, teams, videoFormat }: FinalScoreScre
 
   return (
     <>
-      {showScore && <FinalTeamScore teams={teams} />}
+      {showScore && <FinalTeamScore teams={teams} videoFormat={videoFormat} />}
       <motion.div
         key="final-score"
         initial={{ opacity: 0 }}
