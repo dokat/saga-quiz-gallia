@@ -64,7 +64,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 scale: 0.9,
               }}
               animate={{
-                y: 320,
+                y: videoFormat === '16_10' ? 270 : 320,
                 opacity: 1,
                 scale: 1,
               }}

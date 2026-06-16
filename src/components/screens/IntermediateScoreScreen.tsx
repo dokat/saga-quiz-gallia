@@ -53,7 +53,7 @@ export const IntermediateScoreScreen = ({
                 delay: 0,
                 duration: 1.5,
               }}
-              className={`fixed bottom-[146px] ${index === 0 ? 'left-[500px]' : 'right-[500px]'} flex flex-col items-center`}
+              className={`fixed ${videoFormat === '16_10' ? 'bottom-[205px]' : 'bottom-[146px]'} ${index === 0 ? 'left-[500px]' : 'right-[500px]'} flex flex-col items-center`}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0, y: 20 }}
