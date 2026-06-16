@@ -8,6 +8,8 @@ interface InitScreenProps {
   appMode: 'TOUCHSCREEN' | 'BUZZER';
   setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
   serialPortName?: string | null;
+  videoFormat: '16_9' | '16_10';
+  setVideoFormat: (format: '16_9' | '16_10') => void;
 }
 
 export const InitScreen = ({
@@ -17,7 +19,9 @@ export const InitScreen = ({
   isSerialSupported,
   appMode,
   setAppMode,
-  serialPortName
+  serialPortName,
+  videoFormat,
+  setVideoFormat,
 }: InitScreenProps) => {
   return (
     <motion.div
@@ -32,51 +36,92 @@ export const InitScreen = ({
         Lancer l'application
       </div>
 
-      {/* Input Mode Selector */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-md">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setAppMode('TOUCHSCREEN');
-          }}
-          className={`px-8 py-4 rounded-xl font-black uppercase tracking-wider transition-all ${appMode === 'TOUCHSCREEN'
-              ? 'bg-white text-zinc-900 shadow-xl scale-105'
-              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-            }`}
-        >
-          Tactile
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setAppMode('BUZZER');
-          }}
-          className={`px-8 py-4 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-3 ${appMode === 'BUZZER'
-              ? 'bg-yellow-500 text-white shadow-xl scale-105'
-              : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-            }`}
-        >
-          Buzzer{serialConnected && serialPortName ? ` (${serialPortName})` : ''}
-          {appMode === 'BUZZER' && serialConnected && (
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          )}
-        </button>
-      </div>
+      {/* Configurations & Controls Panel */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6 z-[100]"
+      >
+        {/* Serial Connect Button (only shown if BUZZER mode is selected and not connected) */}
+        {appMode === 'BUZZER' && isSerialSupported && !serialConnected && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onConnectSerial?.();
+            }}
+            className="px-6 py-3 rounded-full bg-green-500 text-white font-bold hover:bg-green-400 transition-all shadow-lg animate-bounce"
+          >
+            Connecter l'Arduino (Série)
+          </motion.button>
+        )}
 
-      {/* Serial Connect Button (only shown if BUZZER mode is selected and not connected) */}
-      {appMode === 'BUZZER' && isSerialSupported && !serialConnected && (
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onConnectSerial?.();
-          }}
-          className="absolute bottom-32 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-green-500 text-white font-bold hover:bg-green-400 transition-all shadow-lg animate-bounce"
-        >
-          Connecter l'Arduino (Série)
-        </motion.button>
-      )}
+        <div className="flex items-center gap-8 bg-white/5 p-4 rounded-3xl border border-white/10 backdrop-blur-md shadow-2xl">
+          {/* Input Mode Selector */}
+          <div className="flex flex-col gap-2">
+            <span className="text-white/40 text-[10px] font-black uppercase tracking-widest text-center">
+              Mode de jeu
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setAppMode('TOUCHSCREEN')}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                  appMode === 'TOUCHSCREEN'
+                    ? 'bg-white text-zinc-900 shadow-xl scale-105'
+                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                }`}
+              >
+                Tactile
+              </button>
+              <button
+                onClick={() => setAppMode('BUZZER')}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm flex items-center gap-2 ${
+                  appMode === 'BUZZER'
+                    ? 'bg-yellow-500 text-white shadow-xl scale-105'
+                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                }`}
+              >
+                Buzzer{serialConnected && serialPortName ? ` (${serialPortName})` : ''}
+                {appMode === 'BUZZER' && serialConnected && (
+                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="w-[1px] h-12 bg-white/15" />
+
+          {/* Video Format Selector */}
+          <div className="flex flex-col gap-2">
+            <span className="text-white/40 text-[10px] font-black uppercase tracking-widest text-center">
+              Format vidéo
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setVideoFormat('16_9')}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                  videoFormat === '16_9'
+                    ? 'bg-white text-zinc-900 shadow-xl scale-105'
+                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                }`}
+              >
+                16/9
+              </button>
+              <button
+                onClick={() => setVideoFormat('16_10')}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                  videoFormat === '16_10'
+                    ? 'bg-white text-zinc-900 shadow-xl scale-105'
+                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                }`}
+              >
+                16/10
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 };

@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 
-export const useHardwareInput = (onInput: (key: string) => void, mode: 'TOUCHSCREEN' | 'BUZZER') => {
+export const useHardwareInput = (
+  onInput: (key: string) => void,
+  mode: 'TOUCHSCREEN' | 'BUZZER'
+) => {
   const [isSerialSupported, setIsSerialSupported] = useState(false);
   const [serialConnected, setSerialConnected] = useState(false);
   const [serialPortName, setSerialPortName] = useState<string | null>(null);

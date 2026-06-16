@@ -19,12 +19,12 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   onResponse,
   addScore,
   visibleTeams,
-  appMode
+  appMode,
 }) => {
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   useEffect(() => {
-    const hasVisibleTeam = visibleTeams.some(v => v);
+    const hasVisibleTeam = visibleTeams.some((v) => v);
     if (!hasVisibleTeam) {
       setDisplayAvatar(false);
     }
@@ -59,23 +59,26 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               initial={{
                 y: 800,
                 opacity: 0,
-                scale: 0.9
+                scale: 0.9,
               }}
               animate={{
                 y: 320,
                 opacity: 1,
-                scale: 1
+                scale: 1,
               }}
               transition={{
                 type: 'spring',
                 stiffness: 70,
                 damping: 12,
                 delay: appMode === 'BUZZER' ? 0 : index * 0.4,
-                duration: 1.5
+                duration: 1.5,
               }}
               className={`fixed bottom-0 ${index === 0 ? 'left-10' : 'right-10'}`}
               onAnimationComplete={(_e) => {
-                const maxVisibleIndex = visibleTeams.reduce((max, isVis, idx) => isVis ? idx : max, -1);
+                const maxVisibleIndex = visibleTeams.reduce(
+                  (max, isVis, idx) => (isVis ? idx : max),
+                  -1
+                );
                 if (index === maxVisibleIndex) setDisplayAvatar(true);
               }}
             >
@@ -98,28 +101,28 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 initial={{
                   y: 800,
                   opacity: 0,
-                  scale: 0.9
+                  scale: 0.9,
                 }}
                 animate={{
                   y: 100,
                   opacity: 1,
-                  scale: 1
+                  scale: 1,
                 }}
                 transition={{
                   type: 'spring',
                   stiffness: 70,
                   damping: 12,
                   delay: appMode === 'BUZZER' ? 0 : teamIdx * 0.4,
-                  duration: 1.5
+                  duration: 1.5,
                 }}
                 drag={false}
                 style={{
                   touchAction: 'none',
-                  visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden'
+                  visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden',
                 }}
-                className='pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing text-8xl font-black text-white italic'
+                className="pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing text-8xl font-black text-white italic"
               >
-                <div >{team.score}</div>
+                <div>{team.score}</div>
               </motion.div>
             );
           })}
@@ -154,21 +157,25 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                     }
                   });
                 }}
-                onTap={() => { if (!question.zones || question.zones.length === 0) addScore(teamIdx) }}
+                onTap={() => {
+                  if (!question.zones || question.zones.length === 0) addScore(teamIdx);
+                }}
                 style={{
                   touchAction: 'none',
-                  visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden'
+                  visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden',
                 }}
-                className='pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing'
+                className="pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing"
               >
-                <img className="w-24 pointer-events-none select-none" src={`./images/logo_team_fill_${teamIdx + 1}.png`} draggable={false} />
+                <img
+                  className="w-24 pointer-events-none select-none"
+                  src={`./images/logo_team_fill_${teamIdx + 1}.png`}
+                  draggable={false}
+                />
               </motion.div>
             );
           })}
         </div>
       )}
-
-
     </div>
   );
 };

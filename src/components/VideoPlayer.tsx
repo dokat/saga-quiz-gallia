@@ -27,7 +27,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.load();
-      videoRef.current.play().catch(e => console.error("Video play failed:", e));
+      videoRef.current.play().catch((e) => console.error('Video play failed:', e));
     }
   }, [src]);
 
@@ -42,7 +42,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       playsInline={playsInline}
       muted={muted}
       className={cn(
-        "absolute inset-0 w-full h-full object-fill select-none pointer-events-auto",
+        'absolute inset-0 w-full h-full object-fill select-none pointer-events-auto',
         className
       )}
     />
