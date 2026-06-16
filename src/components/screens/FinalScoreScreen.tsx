@@ -5,29 +5,30 @@ import type { Team } from '../../types';
 import { FinalTeamScore } from '../FinalTeamScore';
 
 interface FinalScoreScreenProps {
-    teams: Team[];
-    onClick: () => void;
+  teams: Team[];
+  onClick: () => void;
+  videoFormat: '16_9' | '16_10';
 }
 
-export const FinalScoreScreen = ({ onClick, teams }: FinalScoreScreenProps) => {
-    const [showScore, setShowScore] = useState(false);
+export const FinalScoreScreen = ({ onClick, teams, videoFormat }: FinalScoreScreenProps) => {
+  const [showScore, setShowScore] = useState(false);
 
-    return (
-        <>
-            {showScore && <FinalTeamScore teams={teams} />}
-            <motion.div
-                key="final-score"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0 bg-black flex items-center justify-center cursor-pointer"
-                onClick={onClick}
-            >
-                <VideoPlayer
-                    src="./videos/SCORES_FINAL_ON.mp4"
-                    onEnded={() => setShowScore(true)}
-                />
-            </motion.div>
-        </>
-    )
-}
+  return (
+    <>
+      {showScore && <FinalTeamScore teams={teams} />}
+      <motion.div
+        key="final-score"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 z-0 bg-black flex items-center justify-center cursor-pointer"
+        onClick={onClick}
+      >
+        <VideoPlayer
+          src={`./videos/${videoFormat}/SCORES_FINAL_ON.mp4`}
+          onEnded={() => setShowScore(true)}
+        />
+      </motion.div>
+    </>
+  );
+};

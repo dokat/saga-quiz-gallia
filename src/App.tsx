@@ -24,8 +24,23 @@ function App() {
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
-  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>('BUZZER');
+  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>(() => {
+    const saved = localStorage.getItem('appMode');
+    return saved === 'TOUCHSCREEN' || saved === 'BUZZER' ? saved : 'BUZZER';
+  });
+  const [videoFormat, setVideoFormat] = useState<'16_9' | '16_10'>(() => {
+    const saved = localStorage.getItem('videoFormat');
+    return saved === '16_9' || saved === '16_10' ? saved : '16_9';
+  });
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
+
+  useEffect(() => {
+    localStorage.setItem('appMode', appMode);
+  }, [appMode]);
+
+  useEffect(() => {
+    localStorage.setItem('videoFormat', videoFormat);
+  }, [videoFormat]);
 
   useEffect(() => {
     if (appMode === 'BUZZER' && gameState === 'RESPONSE') {
@@ -164,77 +179,83 @@ function App() {
   }, [restartApp]);
 
   // Handle hardware inputs (Keyboard & Serial)
-  const handleHardwareInput = useCallback((key: string) => {
-    console.log('Hardware input received:', key);
-    console.log('Game state:', gameState);
-    console.log('App mode:', appMode);
-    console.log('Visible teams:', visibleTeams);
+  const handleHardwareInput = useCallback(
+    (key: string) => {
+      console.log('Hardware input received:', key);
+      console.log('Game state:', gameState);
+      console.log('App mode:', appMode);
+      console.log('Visible teams:', visibleTeams);
 
-    if (key.toLowerCase() == 'escape') {
-      switch (gameState) {
-        case 'RESULT_FEEDBACK':
-          handleResultFeedbackEnded();
-          break;
-        case 'ANSWER_VIDEO':
-          handleAnswerVideoEnded();
-          break;
-        case 'INTERMEDIATE_SCORE':
-          handleIntermediateScoreEnded();
-          break;
-        case 'SCORE_SCREEN':
-          handleScoreScreenEnded();
-          break;
-        case 'WAITING':
-          restartApp();
-          break;
-        case 'QUESTION_TITLE':
-          handleQuestionTitleEnded();
-          break;
-        case 'QUESTION':
-          handleQuestionEnded();
-          break;
-        case 'FIN':
-          restartApp();
-          break;
-        default:
-          break;
+      if (key.toLowerCase() == 'escape') {
+        switch (gameState) {
+          case 'RESULT_FEEDBACK':
+            handleResultFeedbackEnded();
+            break;
+          case 'ANSWER_VIDEO':
+            handleAnswerVideoEnded();
+            break;
+          case 'INTERMEDIATE_SCORE':
+            handleIntermediateScoreEnded();
+            break;
+          case 'SCORE_SCREEN':
+            handleScoreScreenEnded();
+            break;
+          case 'WAITING':
+            restartApp();
+            break;
+          case 'QUESTION_TITLE':
+            handleQuestionTitleEnded();
+            break;
+          case 'QUESTION':
+            handleQuestionEnded();
+            break;
+          case 'FIN':
+            restartApp();
+            break;
+          default:
+            break;
+        }
       }
-    }
 
-    // Map keys to game actions here based on gameState
-    if (gameState === 'RESPONSE' && appMode === 'BUZZER') {
-      const lowerKey = key.toLowerCase();
-      let zoneIndex = -1;
-      if (lowerKey.includes('a')) zoneIndex = 0;
-      else if (lowerKey.includes('b')) zoneIndex = 1;
-      else if (lowerKey.includes('c')) zoneIndex = 2;
-      else if (lowerKey.includes('d')) zoneIndex = 3;
-      else if (lowerKey.includes('e')) zoneIndex = 4;
-      else if (lowerKey.includes('f')) zoneIndex = 5;
-      // If a team has already buzzed in (at least one is visible)
-      if (visibleTeams.includes(true)) {
-        if (zoneIndex !== -1) {
-          const answeringTeamIndex = visibleTeams.indexOf(true);
-          handleResponse(zoneIndex, answeringTeamIndex);
+      // Map keys to game actions here based on gameState
+      if (gameState === 'RESPONSE' && appMode === 'BUZZER') {
+        const lowerKey = key.toLowerCase();
+        let zoneIndex = -1;
+        if (lowerKey.includes('w')) zoneIndex = 0;
+        else if (lowerKey.includes('x')) zoneIndex = 1;
+        else if (lowerKey.includes('c')) zoneIndex = 2;
+        else if (lowerKey.includes('v')) zoneIndex = 3;
+        else if (lowerKey.includes('b')) zoneIndex = 4;
+        else if (lowerKey.includes('n')) zoneIndex = 5;
+        // If a team has already buzzed in (at least one is visible)
+        if (visibleTeams.includes(true)) {
+          if (zoneIndex !== -1) {
+            const answeringTeamIndex = visibleTeams.indexOf(true);
+            handleResponse(zoneIndex, answeringTeamIndex);
+            return;
+          }
+          console.log('A team has already buzzed in, ignoring non-answer input.');
           return;
         }
-        console.log('A team has already buzzed in, ignoring non-answer input.');
-        return;
-      }
 
-      if (key.includes('1')) {
-        console.log('Team 1 selected');
-        setVisibleTeams([true, false]);
-        return;
-      } else if (key.includes('2')) {
-        console.log('Team 2 selected');
-        setVisibleTeams([false, true]);
-        return;
+        if (key.includes('1') || key.includes('a')) {
+          console.log('Team 1 selected');
+          setVisibleTeams([true, false]);
+          return;
+        } else if (key.includes('2') || key.includes('z')) {
+          console.log('Team 2 selected');
+          setVisibleTeams([false, true]);
+          return;
+        }
       }
-    }
-  }, [gameState, visibleTeams, appMode, handleResponse]);
+    },
+    [gameState, visibleTeams, appMode, handleResponse]
+  );
 
-  const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(handleHardwareInput, appMode);
+  const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(
+    handleHardwareInput,
+    appMode
+  );
 
   const { inputs: _midiInputs } = useMidi(handleHardwareInput);
 
@@ -260,11 +281,13 @@ function App() {
           appMode={appMode}
           setAppMode={setAppMode}
           serialPortName={serialPortName}
+          videoFormat={videoFormat}
+          setVideoFormat={setVideoFormat}
         />
       )}
 
       {/* 1. WAITING STATE */}
-      {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} />}
+      {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} videoFormat={videoFormat} />}
 
       {/* 2. SEQUENCE TITLE STATE */}
       {gameState === 'SEQUENCE_TITLE' && (
@@ -276,7 +299,7 @@ function App() {
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={`./videos/${sequences[currentSequenceIdx].sequence}`}
+            src={`./videos/${videoFormat}/${sequences[currentSequenceIdx].sequence}`}
             onEnded={() => setGameState('QUESTION_TITLE')}
           />
         </motion.div>
@@ -292,7 +315,7 @@ function App() {
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src={`./videos/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
+            src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
             onEnded={handleQuestionTitleEnded}
           />
         </motion.div>
@@ -309,7 +332,7 @@ function App() {
         >
           {gameState === 'QUESTION' ? (
             <VideoPlayer
-              src={`./videos/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
+              src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
               onEnded={handleQuestionEnded}
               loop={false}
             />
@@ -348,6 +371,7 @@ function App() {
         <ResultFeedbackScreen
           isCorrect={lastResult === 'TRUE'}
           onEnded={handleResultFeedbackEnded}
+          videoFormat={videoFormat}
         />
       )}
 
@@ -363,9 +387,11 @@ function App() {
         >
           <VideoPlayer
             src={
-              Array.isArray(sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.correctAnswerIndex)
-                ? `./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
-                : `./videos/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
+              Array.isArray(
+                sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.correctAnswerIndex
+              )
+                ? `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
+                : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
             }
           />
         </motion.div>
@@ -373,12 +399,20 @@ function App() {
 
       {/* 8. INTERMEDIATE SCORE STATE */}
       {gameState === 'INTERMEDIATE_SCORE' && (
-        <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} teams={teams} />
+        <IntermediateScoreScreen
+          onClick={handleIntermediateScoreEnded}
+          teams={teams}
+          videoFormat={videoFormat}
+        />
       )}
 
       {/* 9. FINAL SCORE STATE */}
       {gameState === 'SCORE_SCREEN' && (
-        <FinalScoreScreen onClick={handleScoreScreenEnded} teams={teams} />
+        <FinalScoreScreen
+          onClick={handleScoreScreenEnded}
+          teams={teams}
+          videoFormat={videoFormat}
+        />
       )}
 
       {/* 10. FINAL VIDEO STATE */}
@@ -391,7 +425,7 @@ function App() {
           className="absolute inset-0 z-0"
         >
           <VideoPlayer
-            src="./videos/0_MERCI.mp4"
+            src={`./videos/${videoFormat}/0_MERCI.mp4`}
             onEnded={() => setGameState('WAITING')}
           />
         </motion.div>
