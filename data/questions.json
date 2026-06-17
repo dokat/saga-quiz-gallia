@@ -1,0 +1,65 @@
+[
+  {
+    "sequence": "1_TITRAGE_BIERES.mp4",
+    "questions": [
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 2
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 0
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 0
+      }
+    ]
+  },
+  {
+    "sequence": "2_TITRAGE_GALLIA.mp4",
+    "questions": [
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 0
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 1
+      }
+    ]
+  },
+  {
+    "sequence": "3_TITRAGE_QUIZ_IPA.mp4",
+    "questions": [
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 1
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 2
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 1
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 3
+      },
+      {
+        "numberOfQuestions": 4,
+        "correctAnswerIndex": 0
+      }
+    ]
+  }
+]
