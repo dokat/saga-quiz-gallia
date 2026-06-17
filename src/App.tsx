@@ -32,7 +32,7 @@ function App() {
     return saved === 'TOUCHSCREEN' || saved === 'BUZZER' ? saved : 'BUZZER';
   });
 
-  const videoFormat = useVideoFormat();
+  const { videoFormat, adjustZone } = useVideoFormat();
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
 
   useEffect(() => {
@@ -372,6 +372,7 @@ function App() {
                 appMode={appMode}
                 videoFormat={videoFormat}
                 zones={zones}
+                adjustZone={adjustZone}
               />
               {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !== 4 && (
                 <NextButton onClick={handleIntermediateScoreEnded} />
@@ -418,6 +419,7 @@ function App() {
           onClick={handleIntermediateScoreEnded}
           teams={teams}
           videoFormat={videoFormat}
+          adjustZone={adjustZone}
         />
       )}
 

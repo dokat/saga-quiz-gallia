@@ -12,6 +12,7 @@ interface DraggableTeamsProps {
   appMode: 'TOUCHSCREEN' | 'BUZZER';
   videoFormat: '16_9' | '16_10';
   zones: Zones;
+  adjustZone: (zone: { x: number; y: number; w: number; h: number }) => { x: number; y: number; w: number; h: number };
 }
 
 export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
@@ -24,6 +25,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   appMode,
   videoFormat,
   zones,
+  adjustZone,
 }) => {
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
@@ -41,18 +43,21 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
       {/* Visual debug zones */}
       {currentZones && (
         <div className="absolute inset-0 pointer-events-none">
-          {Object.values(currentZones).map((zone, zIdx) => (
-            <div
-              key={zIdx}
-              className="absolute border-2 border-dashed border-red/5 rounded-3xl"
-              style={{
-                left: `${zone.x}px`,
-                top: `${zone.y}px`,
-                width: `${zone.w}px`,
-                height: `${zone.h}px`,
-              }}
-            />
-          ))}
+          {Object.values(currentZones).map((zone, zIdx) => {
+            const adjustedZone = adjustZone(zone);
+            return (
+              <div
+                key={zIdx}
+                className="absolute border-2 border-dashed border-red/5 rounded-3xl"
+                style={{
+                  left: `${adjustedZone.x}px`,
+                  top: `${adjustedZone.y}px`,
+                  width: `${adjustedZone.w}px`,
+                  height: `${adjustedZone.h}px`,
+                }}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -68,7 +73,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 scale: 0.9,
               }}
               animate={{
-                y: videoFormat === '16_10' ? 270 : 320,
+                y: adjustZone({ x: 0, y: videoFormat === '16_10' ? 180 : 320, w: 0, h: 0 }).y,
                 opacity: 1,
                 scale: 1,
               }}
@@ -153,11 +158,12 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 
                   if (question.numberOfQuestions !== 4) return;
                   Object.values(currentZones).forEach((zone, zIdx) => {
+                    const adjustedZone = adjustZone(zone);
                     if (
-                      screenX >= zone.x &&
-                      screenX <= zone.x + zone.w &&
-                      screenY >= zone.y &&
-                      screenY <= zone.y + zone.h
+                      screenX >= adjustedZone.x &&
+                      screenX <= adjustedZone.x + adjustedZone.w &&
+                      screenY >= adjustedZone.y &&
+                      screenY <= adjustedZone.y + adjustedZone.h
                     ) {
                       onResponse(zIdx, teamIdx);
                     }

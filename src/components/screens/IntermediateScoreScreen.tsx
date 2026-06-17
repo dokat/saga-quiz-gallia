@@ -7,12 +7,14 @@ interface IntermediateScoreScreenProps {
   teams: Team[];
   onClick: () => void;
   videoFormat: '16_9' | '16_10';
+  adjustZone: (zone: { x: number; y: number; w: number; h: number }) => { x: number; y: number; w: number; h: number };
 }
 
 export const IntermediateScoreScreen = ({
   onClick,
   teams,
   videoFormat,
+  adjustZone,
 }: IntermediateScoreScreenProps) => {
   const [showScore, setShowScore] = useState(false);
 
@@ -53,7 +55,13 @@ export const IntermediateScoreScreen = ({
                 delay: 0,
                 duration: 1.5,
               }}
-              className={`fixed ${videoFormat === '16_10' ? 'bottom-[205px]' : 'bottom-[146px]'} ${index === 0 ? 'left-[500px]' : 'right-[500px]'} flex flex-col items-center`}
+              className="fixed flex flex-col items-center"
+              style={{
+                bottom: `${adjustZone({ x: 0, y: 0, w: 0, h: videoFormat === '16_10' ? 205 : 146 }).h}px`,
+                ...(index === 0
+                  ? { left: `${adjustZone({ x: 500, y: 0, w: 0, h: 0 }).x}px` }
+                  : { right: `${adjustZone({ x: 500, y: 0, w: 0, h: 0 }).x}px` }),
+              }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0, y: 20 }}

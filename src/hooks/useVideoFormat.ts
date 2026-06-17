@@ -8,16 +8,38 @@ export const useVideoFormat = () => {
   }, []);
 
   const [videoFormat, setVideoFormat] = useState<'16_9' | '16_10'>(detectVideoFormat);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
   //keep logs
-  console.log('Screen', window.innerWidth, 'x', window.innerHeight, '(', window.innerWidth / window.innerHeight, ')');
+  console.log('Screen', windowSize.width, 'x', windowSize.height, '(', windowSize.width / windowSize.height, ')');
   console.log('Video format detected', videoFormat);
 
   useEffect(() => {
-    const handleResize = () => setVideoFormat(detectVideoFormat());
+    const handleResize = () => {
+      setVideoFormat(detectVideoFormat());
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [detectVideoFormat]);
 
-  return videoFormat;
+  const adjustZone = useCallback(
+    (zone: { x: number; y: number; w: number; h: number }) => {
+      const baseWidth = 1920;
+      const baseHeight = videoFormat === '16_9' ? 1080 : 1200;
+
+      const scaleX = windowSize.width / baseWidth;
+      const scaleY = windowSize.height / baseHeight;
+
+      return {
+        x: zone.x * scaleX,
+        y: zone.y * scaleY,
+        w: zone.w * scaleX,
+        h: zone.h * scaleY,
+      };
+    },
+    [videoFormat, windowSize]
+  );
+
+  return { videoFormat, adjustZone };
 };
