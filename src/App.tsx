@@ -429,6 +429,7 @@ function App() {
           onClick={handleScoreScreenEnded}
           teams={teams}
           videoFormat={videoFormat}
+          adjustZone={adjustZone}
         />
       )}
 
