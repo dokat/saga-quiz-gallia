@@ -51,6 +51,18 @@ function App() {
   }, [gameState, appMode]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const buzzerAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playBuzzerSound = useCallback(() => {
+    if (!buzzerAudioRef.current) {
+      buzzerAudioRef.current = new Audio('./sons/buzzer-question-pour-un-champion.mp3');
+    }
+    buzzerAudioRef.current.currentTime = 0;
+    buzzerAudioRef.current.play().catch((err) => {
+      console.error('Failed to play buzzer sound:', err);
+    });
+  }, []);
+
 
   const globalQuestionIdx = useMemo(() => {
     let idx = 0;
@@ -241,15 +253,17 @@ function App() {
         if (key.includes('1') || key.includes('a')) {
           console.log('Team 1 selected');
           setVisibleTeams([true, false]);
+          playBuzzerSound();
           return;
         } else if (key.includes('2') || key.includes('z')) {
           console.log('Team 2 selected');
           setVisibleTeams([false, true]);
+          playBuzzerSound();
           return;
         }
       }
     },
-    [gameState, visibleTeams, appMode, handleResponse]
+    [gameState, visibleTeams, appMode, handleResponse, playBuzzerSound]
   );
 
   const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(
