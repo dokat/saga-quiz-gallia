@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
 import VideoPlayer from '../VideoPlayer';
+import { useVideoFormatContext } from '../../contexts/VideoFormatContext';
 
 interface ResultFeedbackScreenProps {
   isCorrect: boolean;
   onEnded: () => void;
-  videoFormat: '16_9' | '16_10';
 }
 
-const ResultFeedbackScreen = ({ isCorrect, onEnded, videoFormat }: ResultFeedbackScreenProps) => {
+const ResultFeedbackScreen = ({ isCorrect, onEnded }: ResultFeedbackScreenProps) => {
+  const { videoFormat } = useVideoFormatContext();
   return (
     <motion.div
       key="result"

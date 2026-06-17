@@ -1,12 +1,11 @@
 import { motion } from 'motion/react';
+import { useAppModeContext } from '../../contexts/AppModeContext';
 
 interface InitScreenProps {
   onStart: () => void;
   onConnectSerial?: () => void;
   serialConnected?: boolean;
   isSerialSupported?: boolean;
-  appMode: 'TOUCHSCREEN' | 'BUZZER';
-  setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
   serialPortName?: string | null;
 }
 
@@ -15,10 +14,9 @@ export const InitScreen = ({
   onConnectSerial,
   serialConnected,
   isSerialSupported,
-  appMode,
-  setAppMode,
   serialPortName,
 }: InitScreenProps) => {
+  const { appMode, setAppMode } = useAppModeContext();
   return (
     <motion.div
       key="init"
@@ -84,7 +82,6 @@ export const InitScreen = ({
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </motion.div>

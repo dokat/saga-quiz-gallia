@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import type { Team, Question, Zones } from '../types';
+import type { Question, Zones } from '../types';
+import { useVideoFormatContext } from '../contexts/VideoFormatContext';
+import { useTeamsContext } from '../contexts/TeamsContext';
+import { useAppModeContext } from '../contexts/AppModeContext';
 
 interface DraggableTeamsProps {
-  teams: Team[];
   question: Question;
   containerRef: React.RefObject<HTMLDivElement | null>;
   onResponse: (zoneIndex: number, teamIndex: number) => void;
-  addScore: (teamIndex: number) => void;
   visibleTeams: boolean[];
-  appMode: 'TOUCHSCREEN' | 'BUZZER';
-  videoFormat: '16_9' | '16_10';
   zones: Zones;
-  adjustZone: (zone: { x: number; y: number; w: number; h: number }) => { x: number; y: number; w: number; h: number };
 }
 
 export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
-  teams,
   question,
   containerRef,
   onResponse,
-  addScore,
   visibleTeams,
-  appMode,
-  videoFormat,
   zones,
-  adjustZone,
 }) => {
+  const { videoFormat, adjustZone } = useVideoFormatContext();
+  const { teams, addScore } = useTeamsContext();
+  const { appMode } = useAppModeContext();
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   const currentZones = zones[videoFormat][question.numberOfQuestions];

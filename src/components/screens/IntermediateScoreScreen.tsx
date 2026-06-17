@@ -1,21 +1,16 @@
 import { motion } from 'motion/react';
 import VideoPlayer from '../VideoPlayer';
 import { useState } from 'react';
-import type { Team } from '../../types';
+import { useVideoFormatContext } from '../../contexts/VideoFormatContext';
+import { useTeamsContext } from '../../contexts/TeamsContext';
 
 interface IntermediateScoreScreenProps {
-  teams: Team[];
   onClick: () => void;
-  videoFormat: '16_9' | '16_10';
-  adjustZone: (zone: { x: number; y: number; w: number; h: number }) => { x: number; y: number; w: number; h: number };
 }
 
-export const IntermediateScoreScreen = ({
-  onClick,
-  teams,
-  videoFormat,
-  adjustZone,
-}: IntermediateScoreScreenProps) => {
+export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProps) => {
+  const { videoFormat, adjustZone } = useVideoFormatContext();
+  const { teams } = useTeamsContext();
   const [showScore, setShowScore] = useState(false);
 
   return (

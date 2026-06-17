@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
 import VideoPlayer from '../VideoPlayer';
+import { useVideoFormatContext } from '../../contexts/VideoFormatContext';
 
 interface WaitingScreenProps {
   onStart: () => void;
-  videoFormat: '16_9' | '16_10';
 }
 
-const WaitingScreen = ({ onStart, videoFormat }: WaitingScreenProps) => {
+const WaitingScreen = ({ onStart }: WaitingScreenProps) => {
+  const { videoFormat } = useVideoFormatContext();
   return (
     <motion.div
       key="waiting"
