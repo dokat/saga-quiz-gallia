@@ -41,7 +41,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   return (
     <div className="absolute inset-0 bg">
       {/* Visual debug zones */}
-      {currentZones && (
+      {/* {currentZones && (
         <div className="absolute inset-0 pointer-events-none">
           {Object.values(currentZones).map((zone, zIdx) => {
             const adjustedZone = adjustZone(zone);
@@ -59,7 +59,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             );
           })}
         </div>
-      )}
+      )} */}
 
       <div className="absolute inset-0 pointer-events-none">
         {teams.map((_, index) => {
