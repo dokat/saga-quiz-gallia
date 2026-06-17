@@ -21,11 +21,7 @@
     "questions": [
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": [
-          1,
-          2,
-          3
-        ]
+        "correctAnswerIndex": [1, 2, 3]
       },
       {
         "numberOfQuestions": 4,
@@ -59,6 +55,19 @@
       {
         "numberOfQuestions": 4,
         "correctAnswerIndex": 0
+      }
+    ]
+  },
+  {
+    "sequence": "4_TITRAGE_DEGUSTATION.mp4",
+    "questions": [
+      {
+        "numberOfQuestions": 6,
+        "correctAnswerIndex": 1
+      },
+      {
+        "numberOfQuestions": 6,
+        "correctAnswerIndex": 2
       }
     ]
   }
