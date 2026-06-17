@@ -18,7 +18,6 @@ const WaitingScreen = ({ onStart, videoFormat }: WaitingScreenProps) => {
         src={`./videos/${videoFormat}/0_ATTENTE_IPA_SHOW_LONG.mp4`}
         loop
         onClick={onStart}
-        className="brightness-75"
       />
     </motion.div>
   );
