@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import type { Team, Question } from '../types';
+import type { Team, Question, Zones } from '../types';
 
 interface DraggableTeamsProps {
   teams: Team[];
@@ -11,6 +11,7 @@ interface DraggableTeamsProps {
   visibleTeams: boolean[];
   appMode: 'TOUCHSCREEN' | 'BUZZER';
   videoFormat: '16_9' | '16_10';
+  zones: Zones;
 }
 
 export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
@@ -22,8 +23,11 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   visibleTeams,
   appMode,
   videoFormat,
+  zones,
 }) => {
   const [displayAvatar, setDisplayAvatar] = useState(false);
+
+  const currentZones = zones[videoFormat][question.numberOfQuestions];
 
   useEffect(() => {
     const hasVisibleTeam = visibleTeams.some((v) => v);
@@ -35,12 +39,12 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   return (
     <div className="absolute inset-0 bg">
       {/* Visual debug zones */}
-      {/* {question.zones && question.zones.length > 0 && (
+      {currentZones && (
         <div className="absolute inset-0 pointer-events-none">
-          {question.zones.map((zone) => (
+          {Object.values(currentZones).map((zone, zIdx) => (
             <div
-              key={zone.id}
-              className="absolute border-2 border-dashed border-white/5 rounded-3xl"
+              key={zIdx}
+              className="absolute border-2 border-dashed border-red/5 rounded-3xl"
               style={{
                 left: `${zone.x}px`,
                 top: `${zone.y}px`,
@@ -50,7 +54,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             />
           ))}
         </div>
-      )} */}
+      )}
 
       <div className="absolute inset-0 pointer-events-none">
         {teams.map((_, index) => {
@@ -94,7 +98,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
         })}
       </div>
 
-      {!question.zones && (
+      {question.numberOfQuestions !== 4 && (
         <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none z-0">
           {teams.map((team, teamIdx) => {
             return (
@@ -138,7 +142,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             return (
               <motion.div
                 key={teamIdx}
-                drag={question.zones && question.zones.length > 0}
+                drag={question.numberOfQuestions === 4}
                 dragConstraints={containerRef}
                 dragElastic={0.05}
                 dragSnapToOrigin
@@ -147,8 +151,8 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                   const screenX = info.point.x; // / window.innerWidth;
                   const screenY = info.point.y; // / window.innerHeight;
 
-                  if (!question.zones || question.zones.length === 0) return;
-                  question.zones.forEach((zone, zIdx) => {
+                  if (question.numberOfQuestions !== 4) return;
+                  Object.values(currentZones).forEach((zone, zIdx) => {
                     if (
                       screenX >= zone.x &&
                       screenX <= zone.x + zone.w &&
@@ -160,7 +164,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                   });
                 }}
                 onTap={() => {
-                  if (!question.zones || question.zones.length === 0) addScore(teamIdx);
+                  if (question.numberOfQuestions !== 4) addScore(teamIdx);
                 }}
                 style={{
                   touchAction: 'none',

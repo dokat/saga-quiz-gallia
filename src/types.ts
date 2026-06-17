@@ -19,16 +19,21 @@ export interface Sequence {
 }
 
 export interface Question {
+  numberOfQuestions: number;
   correctAnswerIndex: number | number[]; // 0-3
-  zones?: {
-    id: string;
-    label: string;
-    // Normalized coordinates (0-1) for 4 zones on screen
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-  }[];
+}
+
+export interface Zones {
+  [key: string]: { //videoFormat
+    [key: number]: { //numberOfQuestions
+      [key: string]: { //indexZone
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+      }
+    };
+  };
 }
 
 export interface Team {

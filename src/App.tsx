@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { GameState, Team, Sequence } from './types';
+import type { GameState, Team, Sequence, Zones } from './types';
 import InitScreen from './components/screens/InitScreen';
 import WaitingScreen from './components/screens/WaitingScreen';
 import { motion } from 'motion/react';
@@ -23,6 +23,8 @@ function App() {
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
+  const [zones, setZones] = useState<Zones>({});
+
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
   const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>(() => {
     const saved = localStorage.getItem('appMode');
@@ -33,6 +35,10 @@ function App() {
     return saved === '16_9' || saved === '16_10' ? saved : '16_9';
   });
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
+
+  console.log("Current resolution ", window.innerWidth, ' x ', window.innerHeight, ' (', window.innerWidth / window.innerHeight, ')');
+  console.log("videoFormat ", videoFormat, '(target ', videoFormat === '16_9' ? 16 / 9 : 16 / 10, ')');
+
 
   useEffect(() => {
     localStorage.setItem('appMode', appMode);
@@ -75,10 +81,15 @@ function App() {
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   useEffect(() => {
-    fetch(`./questions.json`)
+    fetch(`./data/questions.json`)
       .then((res) => res.json())
       .then((data) => setSequences(data as Sequence[]))
       .catch((err) => console.error('Failed to load sequences:', err));
+
+    fetch(`./data/zones.json`)
+      .then((res) => res.json())
+      .then((data) => setZones(data as Zones))
+      .catch((err) => console.error('Failed to load zones:', err));
   }, []);
 
   const resetGame = useCallback(() => {
@@ -371,11 +382,11 @@ function App() {
                 visibleTeams={visibleTeams}
                 appMode={appMode}
                 videoFormat={videoFormat}
+                zones={zones}
               />
-              {(!sequences[currentSequenceIdx].questions[currentQuestionIdx].zones ||
-                sequences[currentSequenceIdx].questions[currentQuestionIdx].zones.length === 0) && (
-                  <NextButton onClick={handleIntermediateScoreEnded} />
-                )}
+              {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !== 4 && (
+                <NextButton onClick={handleIntermediateScoreEnded} />
+              )}
             </>
           )}
         </motion.div>
