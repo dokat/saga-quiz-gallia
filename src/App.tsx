@@ -10,6 +10,7 @@ import ResultFeedbackScreen from './components/screens/ResultFeedbackScreen';
 import { IntermediateScoreScreen } from './components/screens/IntermediateScoreScreen';
 import { FinalScoreScreen } from './components/screens/FinalScoreScreen';
 import { useHardwareInput } from './hooks/useHardwareInput';
+import { useVideoFormat } from './hooks/useVideoFormat';
 import NextButton from './components/NextButton';
 import { useMidi } from './hooks/useMidi';
 
@@ -30,23 +31,13 @@ function App() {
     const saved = localStorage.getItem('appMode');
     return saved === 'TOUCHSCREEN' || saved === 'BUZZER' ? saved : 'BUZZER';
   });
-  const [videoFormat, setVideoFormat] = useState<'16_9' | '16_10'>(() => {
-    const saved = localStorage.getItem('videoFormat');
-    return saved === '16_9' || saved === '16_10' ? saved : '16_9';
-  });
+
+  const videoFormat = useVideoFormat();
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
-
-  console.log("Current resolution ", window.innerWidth, ' x ', window.innerHeight, ' (', window.innerWidth / window.innerHeight, ')');
-  console.log("videoFormat ", videoFormat, '(target ', videoFormat === '16_9' ? 16 / 9 : 16 / 10, ')');
-
 
   useEffect(() => {
     localStorage.setItem('appMode', appMode);
   }, [appMode]);
-
-  useEffect(() => {
-    localStorage.setItem('videoFormat', videoFormat);
-  }, [videoFormat]);
 
   useEffect(() => {
     if (appMode === 'BUZZER' && gameState === 'RESPONSE') {
@@ -306,8 +297,6 @@ function App() {
           appMode={appMode}
           setAppMode={setAppMode}
           serialPortName={serialPortName}
-          videoFormat={videoFormat}
-          setVideoFormat={setVideoFormat}
         />
       )}
 

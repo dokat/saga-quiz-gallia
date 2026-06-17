@@ -8,8 +8,6 @@ interface InitScreenProps {
   appMode: 'TOUCHSCREEN' | 'BUZZER';
   setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
   serialPortName?: string | null;
-  videoFormat: '16_9' | '16_10';
-  setVideoFormat: (format: '16_9' | '16_10') => void;
 }
 
 export const InitScreen = ({
@@ -20,8 +18,6 @@ export const InitScreen = ({
   appMode,
   setAppMode,
   serialPortName,
-  videoFormat,
-  setVideoFormat,
 }: InitScreenProps) => {
   return (
     <motion.div
@@ -89,37 +85,6 @@ export const InitScreen = ({
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="w-[1px] h-12 bg-white/15" />
-
-          {/* Video Format Selector */}
-          <div className="flex flex-col gap-2">
-            <span className="text-white/40 text-[10px] font-black uppercase tracking-widest text-center">
-              Format vidéo
-            </span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setVideoFormat('16_9')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
-                  videoFormat === '16_9'
-                    ? 'bg-white text-zinc-900 shadow-xl scale-105'
-                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                }`}
-              >
-                16/9
-              </button>
-              <button
-                onClick={() => setVideoFormat('16_10')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
-                  videoFormat === '16_10'
-                    ? 'bg-white text-zinc-900 shadow-xl scale-105'
-                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                }`}
-              >
-                16/10
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </motion.div>
