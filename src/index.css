@@ -11,5 +11,5 @@ html,
 body,
 #root {
   @apply h-screen w-full overflow-hidden;
-  cursor: none;
+  /* cursor: none; */
 }
