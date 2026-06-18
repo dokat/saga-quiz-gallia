@@ -9,7 +9,7 @@ interface IntermediateScoreScreenProps {
 }
 
 export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProps) => {
-  const { videoFormat, adjustZone } = useVideoFormatContext();
+  const { videoFormat, adjustZone, scaleSize } = useVideoFormatContext();
   const { teams } = useTeamsContext();
   const [showScore, setShowScore] = useState(false);
 
@@ -68,12 +68,14 @@ export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProp
                   damping: 15,
                 }}
                 className="text-8xl font-black text-white italic"
+                style={{ fontSize: scaleSize(96) }}
               >
                 {teams[index].score}
               </motion.div>
               <img
                 src={`./images/${videoFormat}/colonne_final_${index + 1}.png`}
-                className="w-32 h-auto pointer-events-none select-none"
+                style={{ width: scaleSize(128) }}
+                className="h-auto pointer-events-none select-none"
                 alt=""
                 draggable={false}
               />

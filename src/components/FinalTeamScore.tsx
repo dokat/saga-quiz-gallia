@@ -3,7 +3,7 @@ import { useVideoFormatContext } from '../contexts/VideoFormatContext';
 import { useTeamsContext } from '../contexts/TeamsContext';
 
 export const FinalTeamScore: React.FC = () => {
-  const { videoFormat, adjustZone } = useVideoFormatContext();
+  const { videoFormat, adjustZone, scaleSize } = useVideoFormatContext();
   const { teams } = useTeamsContext();
   const bottom = adjustZone({ x: 0, y: 0, w: 0, h: videoFormat === '16_10' ? 460 : 400 }).h;
   const leftRight = adjustZone({ x: 700, y: 0, w: 0, h: 0 }).x;
@@ -27,7 +27,8 @@ export const FinalTeamScore: React.FC = () => {
           <motion.span
             initial={{ scale: 1.5, color: '#00B1a9' }}
             animate={{ scale: 1, color: '#00B1a9' }}
-            className="text-9xl font-black tabular-nums "
+            className="font-black tabular-nums"
+            style={{ fontSize: scaleSize(128) }}
           >
             {teams[0].score}
           </motion.span>
@@ -47,7 +48,8 @@ export const FinalTeamScore: React.FC = () => {
           <motion.span
             initial={{ scale: 1.5, color: '#00B1a9' }}
             animate={{ scale: 1, color: '#00B1a9' }}
-            className="text-9xl font-black tabular-nums "
+            className="font-black tabular-nums"
+            style={{ fontSize: scaleSize(128) }}
           >
             {teams[1].score}
           </motion.span>

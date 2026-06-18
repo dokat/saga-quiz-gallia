@@ -20,12 +20,15 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   visibleTeams,
   zones,
 }) => {
-  const { videoFormat, adjustZone } = useVideoFormatContext();
+  const { videoFormat, adjustZone, scaleSize } = useVideoFormatContext();
   const { teams, addScore } = useTeamsContext();
   const { appMode } = useAppModeContext();
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   const currentZones = zones[videoFormat][question.numberOfQuestions];
+  console.log(zones);
+  console.log(question);
+  console.log(currentZones);
 
   useEffect(() => {
     const hasVisibleTeam = visibleTeams.some((v) => v);
@@ -37,25 +40,23 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   return (
     <div className="absolute inset-0 bg">
       {/* Visual debug zones */}
-      {/* {currentZones && (
-        <div className="absolute inset-0 pointer-events-none">
-          {Object.values(currentZones).map((zone, zIdx) => {
-            const adjustedZone = adjustZone(zone);
-            return (
-              <div
-                key={zIdx}
-                className="absolute border-2 border-dashed border-red/5 rounded-3xl"
-                style={{
-                  left: `${adjustedZone.x}px`,
-                  top: `${adjustedZone.y}px`,
-                  width: `${adjustedZone.w}px`,
-                  height: `${adjustedZone.h}px`,
-                }}
-              />
-            );
-          })}
-        </div>
-      )} */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Object.values(currentZones).map((zone, zIdx) => {
+          const adjustedZone = adjustZone(zone);
+          return (
+            <div
+              key={zIdx}
+              className="absolute border-2 border-dashed border-red/5 rounded-3xl"
+              style={{
+                left: `${adjustedZone.x}px`,
+                top: `${adjustedZone.y}px`,
+                width: `${adjustedZone.w}px`,
+                height: `${adjustedZone.h}px`,
+              }}
+            />
+          );
+        })}
+      </div>
 
       <div className="absolute inset-0 pointer-events-none">
         {teams.map((_, index) => {
@@ -80,7 +81,8 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 delay: appMode === 'BUZZER' ? 0 : index * 0.4,
                 duration: 1.5,
               }}
-              className={`fixed bottom-0 ${index === 0 ? 'left-10' : 'right-10'}`}
+              style={{ [index === 0 ? 'left' : 'right']: scaleSize(40) }}
+              className="fixed bottom-0"
               onAnimationComplete={(_e) => {
                 const maxVisibleIndex = visibleTeams.reduce(
                   (max, isVis, idx) => (isVis ? idx : max),
@@ -91,7 +93,8 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
             >
               <img
                 src={`./images/${videoFormat}/colonne_inter_${index + 1}.png`}
-                className="w-32 h-auto "
+                style={{ width: scaleSize(128) }}
+                className="h-auto"
                 alt=""
               />
             </motion.div>
@@ -100,7 +103,10 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
       </div>
 
       {question.numberOfQuestions !== 4 && (
-        <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none z-0">
+        <div
+          className="absolute inset-0 flex justify-between items-center pointer-events-none z-0"
+          style={{ paddingLeft: scaleSize(40), paddingRight: scaleSize(40) }}
+        >
           {teams.map((team, teamIdx) => {
             return (
               <motion.div
@@ -126,8 +132,11 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 style={{
                   touchAction: 'none',
                   visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden',
+                  width: scaleSize(128),
+                  height: scaleSize(128),
+                  fontSize: scaleSize(96),
                 }}
-                className="pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing text-8xl font-black text-white italic"
+                className="pointer-events-auto flex items-center justify-center cursor-grab active:cursor-grabbing font-black text-white italic"
               >
                 <div>{team.score}</div>
               </motion.div>
@@ -138,7 +147,10 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 
       {/* Team Avatars to Drag */}
       {displayAvatar && (
-        <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none z-50">
+        <div
+          className="absolute inset-0 flex justify-between items-center pointer-events-none z-50"
+          style={{ paddingLeft: scaleSize(40), paddingRight: scaleSize(40) }}
+        >
           {teams.map((_team, teamIdx) => {
             return (
               <motion.div
@@ -171,11 +183,14 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 style={{
                   touchAction: 'none',
                   visibility: visibleTeams[teamIdx] ? 'visible' : 'hidden',
+                  width: scaleSize(128),
+                  height: scaleSize(128),
                 }}
-                className="pointer-events-auto w-32 h-32 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                className="pointer-events-auto flex items-center justify-center cursor-grab active:cursor-grabbing"
               >
                 <img
-                  className="w-24 pointer-events-none select-none"
+                  style={{ width: scaleSize(96) }}
+                  className="pointer-events-none select-none"
                   src={`./images/${videoFormat}/logo_team_fill_${teamIdx + 1}.png`}
                   draggable={false}
                 />

@@ -27,6 +27,8 @@ function App() {
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
   const [sequences, setSequences] = useState<Sequence[]>([]);
+  console.log(sequences);
+
   const [zones, setZones] = useState<Zones>({});
 
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
@@ -35,7 +37,7 @@ function App() {
     return saved === 'TOUCHSCREEN' || saved === 'BUZZER' ? saved : 'BUZZER';
   });
 
-  const { videoFormat, adjustZone } = useVideoFormat();
+  const { videoFormat, adjustZone, scaleSize } = useVideoFormat();
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
 
   useEffect(() => {
@@ -282,7 +284,7 @@ function App() {
   }
 
   return (
-    <VideoFormatProvider value={{ videoFormat, adjustZone }}>
+    <VideoFormatProvider value={{ videoFormat, adjustZone, scaleSize }}>
       <TeamsProvider value={{ teams, addScore: handleAddScore }}>
         <AppModeProvider value={{ appMode, setAppMode }}>
           <div

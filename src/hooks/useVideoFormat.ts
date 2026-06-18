@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export const useVideoFormat = () => {
+  console.log('devicePixelRatio: ', window.devicePixelRatio);
+
   const detectVideoFormat = useCallback((): '16_9' | '16_10' => {
     const ratio = window.innerWidth / window.innerHeight;
     // Midpoint between 16/9 (≈1.778) and 16/10 (1.6) is ≈1.689
@@ -8,10 +10,21 @@ export const useVideoFormat = () => {
   }, []);
 
   const [videoFormat, setVideoFormat] = useState<'16_9' | '16_10'>(detectVideoFormat);
-  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   //keep logs
-  console.log('Screen', windowSize.width, 'x', windowSize.height, '(', windowSize.width / windowSize.height, ')');
+  console.log(
+    'Screen',
+    windowSize.width,
+    'x',
+    windowSize.height,
+    '(',
+    windowSize.width / windowSize.height,
+    ')'
+  );
   console.log('Video format detected', videoFormat);
 
   useEffect(() => {
@@ -41,5 +54,16 @@ export const useVideoFormat = () => {
     [videoFormat, windowSize]
   );
 
-  return { videoFormat, adjustZone };
+  /**
+   * Scale a size (in pixels, designed for 1920px wide) to the current viewport width.
+   * Mirrors the scaleX factor used in adjustZone.
+   */
+  const scaleSize = useCallback(
+    (px: number): number => {
+      return Math.round(px * (windowSize.width / 1920));
+    },
+    [windowSize.width]
+  );
+
+  return { videoFormat, adjustZone, scaleSize };
 };
