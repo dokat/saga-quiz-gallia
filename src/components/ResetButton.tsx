@@ -1,10 +1,10 @@
 import { motion } from 'motion/react';
 
-interface NextButtonProps {
+interface ResetButtonProps {
   onClick: () => void;
 }
 
-export const NextButton = ({ onClick }: NextButtonProps) => (
+export const ResetButton = ({ onClick }: ResetButtonProps) => (
   <motion.button
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
@@ -14,8 +14,8 @@ export const NextButton = ({ onClick }: NextButtonProps) => (
                text-white text-3xl font-bold italic tracking-wider shadow-2xl
                hover:bg-white/20 transition-colors"
   >
-    SUIVANT
+    RESET
   </motion.button>
 );
 
-export default NextButton;
+export default ResetButton;

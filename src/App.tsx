@@ -16,6 +16,7 @@ import { useMidi } from './hooks/useMidi';
 import { VideoFormatProvider } from './contexts/VideoFormatContext';
 import { TeamsProvider } from './contexts/TeamsContext';
 import { AppModeProvider } from './contexts/AppModeContext';
+import ResetButton from './components/ResetButton';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('INIT');
@@ -376,7 +377,10 @@ function App() {
                     />
                     {sequences[currentSequenceIdx].questions[currentQuestionIdx]
                       .numberOfQuestions !== 4 && (
-                      <NextButton onClick={handleIntermediateScoreEnded} />
+                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                        <NextButton onClick={handleIntermediateScoreEnded} />
+                        <ResetButton onClick={() => setVisibleTeams([false, false])} />
+                      </div>
                     )}
                   </>
                 )}
@@ -430,11 +434,9 @@ function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 z-0"
+                onClick={() => setGameState('WAITING')}
               >
-                <VideoPlayer
-                  src={`./videos/${videoFormat}/0_MERCI.mp4`}
-                  onEnded={() => setGameState('WAITING')}
-                />
+                <VideoPlayer src={`./videos/${videoFormat}/0_MERCI.mp4`} loop={true} />
               </motion.div>
             )}
 
