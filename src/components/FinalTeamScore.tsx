@@ -7,7 +7,7 @@ export const FinalTeamScore: React.FC = () => {
   const { teams } = useTeamsContext();
   const bottom = adjustZone({ x: 0, y: 0, w: 0, h: videoFormat === '16_10' ? 460 : 400 }).h;
   const leftRight = adjustZone({ x: 700, y: 0, w: 0, h: 0 }).x;
-  const top = adjustZone({ x: 0, y: 60, w: 0, h: 0 }).y;
+  const top = adjustZone({ x: 0, y: 30, w: 0, h: 0 }).y;
 
   return (
     <div
