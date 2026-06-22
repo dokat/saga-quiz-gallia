@@ -9,7 +9,7 @@ export const NextButton = ({ onClick }: NextButtonProps) => (
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
     onClick={onClick}
-    className="pointer-events-auto
+    className="pointer-events-auto focus:outline-none
                bg-white/10 backdrop-blur-md border border-white/20 px-12 py-4 rounded-full
                text-white text-3xl font-bold italic tracking-wider shadow-2xl
                hover:bg-white/20 transition-colors"
