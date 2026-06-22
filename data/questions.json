@@ -4,15 +4,18 @@
     "questions": [
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 2
+        "correctAnswerIndex": 2,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "numberOfAnswerVideos": 1
       }
     ]
   },
@@ -21,15 +24,18 @@
     "questions": [
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": [1, 2, 3]
+        "correctAnswerIndex": [1, 2, 3],
+        "numberOfAnswerVideos": 3
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "numberOfAnswerVideos": 1
       }
     ]
   },
@@ -38,23 +44,28 @@
     "questions": [
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 2
+        "correctAnswerIndex": 2,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 3
+        "correctAnswerIndex": [1, 3],
+        "numberOfAnswerVideos": 1
       },
       {
         "numberOfQuestions": 4,
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "numberOfAnswerVideos": 1
       }
     ]
   },
@@ -63,11 +74,13 @@
     "questions": [
       {
         "numberOfQuestions": 6,
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "numberOfAnswerVideos": 0
       },
       {
         "numberOfQuestions": 6,
-        "correctAnswerIndex": 2
+        "correctAnswerIndex": 2,
+        "numberOfAnswerVideos": 0
       }
     ]
   }
