@@ -78,7 +78,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                 stiffness: 70,
                 damping: 12,
                 delay: appMode === 'BUZZER' ? 0 : index * 0.4,
-                duration: 1.5,
+                duration: 1,
               }}
               style={{ [index === 0 ? 'left' : 'right']: scaleSize(40) }}
               className="fixed bottom-0"
@@ -101,7 +101,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
         })}
       </div>
 
-      {question.numberOfQuestions !== 4 && (
+      {question.numberOfQuestions !== 4 && displayAvatar && (
         <div
           className="absolute inset-0 flex justify-between items-center pointer-events-none z-0"
           style={{ paddingLeft: scaleSize(40), paddingRight: scaleSize(40) }}
@@ -111,7 +111,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
               <motion.div
                 key={teamIdx}
                 initial={{
-                  y: 800,
+                  y: 200,
                   opacity: 0,
                   scale: 0.9,
                 }}
@@ -124,8 +124,8 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                   type: 'spring',
                   stiffness: 70,
                   damping: 12,
-                  delay: appMode === 'BUZZER' ? 0 : teamIdx * 0.4,
-                  duration: 1.5,
+                  delay: appMode === 'BUZZER' ? 0 : teamIdx * 0.2,
+                  duration: 0,
                 }}
                 drag={false}
                 style={{
@@ -185,7 +185,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
                   width: scaleSize(128),
                   height: scaleSize(128),
                 }}
-                className="pointer-events-auto flex items-center justify-center cursor-grab active:cursor-grabbing"
+                className="pointer-events-auto flex items-center justify-center cursor-grab active:cursor-grabbing focus:outline-none"
               >
                 <img
                   style={{ width: scaleSize(96) }}
