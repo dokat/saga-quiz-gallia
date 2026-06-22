@@ -1,6 +1,4 @@
 import { motion } from 'motion/react';
-import VideoPlayer from '../VideoPlayer';
-import { useState } from 'react';
 import { useVideoFormatContext } from '../../contexts/VideoFormatContext';
 import { useTeamsContext } from '../../contexts/TeamsContext';
 
