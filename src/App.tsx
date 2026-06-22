@@ -273,6 +273,12 @@ function App() {
     [gameState, visibleTeams, appMode, handleResponse, playBuzzerSound]
   );
 
+  const handleReset = () => {
+    if (appMode === 'BUZZER') {
+      setVisibleTeams([false, false]);
+    }
+  };
+
   const { connectSerial, serialConnected, isSerialSupported, serialPortName } = useHardwareInput(
     handleHardwareInput,
     appMode
@@ -379,7 +385,7 @@ function App() {
                       .numberOfQuestions !== 4 && (
                       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
                         <NextButton onClick={handleIntermediateScoreEnded} />
-                        <ResetButton onClick={() => setVisibleTeams([false, false])} />
+                        <ResetButton onClick={handleReset} />
                       </div>
                     )}
                   </>
