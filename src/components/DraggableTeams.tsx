@@ -22,7 +22,7 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
 }) => {
   const { videoFormat, adjustZone, scaleSize } = useVideoFormatContext();
   const { teams, addScore } = useTeamsContext();
-  const { appMode } = useAppModeContext();
+  const { appMode, debugMode } = useAppModeContext();
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   const currentZones = zones[videoFormat][question.numberOfQuestions];
@@ -40,23 +40,25 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   return (
     <div className="absolute inset-0 bg">
       {/* Visual debug zones */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Object.values(currentZones).map((zone, zIdx) => {
-          const adjustedZone = adjustZone(zone);
-          return (
-            <div
-              key={zIdx}
-              className="absolute border-2 border-dashed border-red/5 rounded-3xl"
-              style={{
-                left: `${adjustedZone.x}px`,
-                top: `${adjustedZone.y}px`,
-                width: `${adjustedZone.w}px`,
-                height: `${adjustedZone.h}px`,
-              }}
-            />
-          );
-        })}
-      </div>
+      {debugMode && (
+        <div className="absolute inset-0 pointer-events-none">
+          {Object.values(currentZones).map((zone, zIdx) => {
+            const adjustedZone = adjustZone(zone);
+            return (
+              <div
+                key={zIdx}
+                className="absolute border-2 border-dashed border-red/5 rounded-3xl"
+                style={{
+                  left: `${adjustedZone.x}px`,
+                  top: `${adjustedZone.y}px`,
+                  width: `${adjustedZone.w}px`,
+                  height: `${adjustedZone.h}px`,
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
 
       <div className="absolute inset-0 pointer-events-none">
         {teams.map((_, index) => {

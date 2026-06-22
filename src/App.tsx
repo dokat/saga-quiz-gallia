@@ -15,10 +15,10 @@ import NextButton from './components/NextButton';
 import { useMidi } from './hooks/useMidi';
 import { VideoFormatProvider } from './contexts/VideoFormatContext';
 import { TeamsProvider } from './contexts/TeamsContext';
-import { AppModeProvider } from './contexts/AppModeContext';
+import { AppModeProvider, useAppModeContext } from './contexts/AppModeContext';
 import ResetButton from './components/ResetButton';
 
-function App() {
+function AppContent() {
   const [gameState, setGameState] = useState<GameState>('INIT');
   const [teams, setTeams] = useState<Team[]>([
     { name: 'Équipe 1', score: 0, color: 'bg-red-500' },
@@ -33,17 +33,9 @@ function App() {
   const [zones, setZones] = useState<Zones>({});
 
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
-  const [appMode, setAppMode] = useState<'TOUCHSCREEN' | 'BUZZER'>(() => {
-    const saved = localStorage.getItem('appMode');
-    return saved === 'TOUCHSCREEN' || saved === 'BUZZER' ? saved : 'BUZZER';
-  });
-
   const { videoFormat, adjustZone, scaleSize } = useVideoFormat();
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
-
-  useEffect(() => {
-    localStorage.setItem('appMode', appMode);
-  }, [appMode]);
+  const { appMode } = useAppModeContext();
 
   useEffect(() => {
     if (appMode === 'BUZZER' && gameState === 'RESPONSE') {
@@ -293,170 +285,175 @@ function App() {
   return (
     <VideoFormatProvider value={{ videoFormat, adjustZone, scaleSize }}>
       <TeamsProvider value={{ teams, addScore: handleAddScore }}>
-        <AppModeProvider value={{ appMode, setAppMode }}>
-          <div
-            ref={containerRef}
-            className="relative w-full h-full bg-zinc-900 overflow-hidden select-none touch-none"
-          >
-            {/* Global persistent UI layer */}
-            {/* {(gameState === 'INTERMEDIATE_SCORE') && <TeamUI teams={teams} />} */}
+        <div
+          ref={containerRef}
+          className="relative w-full h-full bg-zinc-900 overflow-hidden select-none touch-none"
+        >
+          {/* Global persistent UI layer */}
+          {/* {(gameState === 'INTERMEDIATE_SCORE') && <TeamUI teams={teams} />} */}
 
-            {/* 0. INIT STATE */}
-            {gameState === 'INIT' && (
-              <InitScreen
-                onStart={handleStartApp}
-                onConnectSerial={connectSerial}
-                serialConnected={serialConnected}
-                isSerialSupported={isSerialSupported}
-                serialPortName={serialPortName}
-              />
-            )}
-
-            {/* 1. WAITING STATE */}
-            {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} />}
-
-            {/* 2. SEQUENCE TITLE STATE */}
-            {gameState === 'SEQUENCE_TITLE' && (
-              <motion.div
-                key={`sequence-title-cycle-${currentSequenceIdx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0"
-              >
-                <VideoPlayer
-                  src={`./videos/${videoFormat}/${sequences[currentSequenceIdx].sequence}`}
-                  onEnded={() => setGameState('QUESTION_TITLE')}
-                />
-              </motion.div>
-            )}
-
-            {/* 3. QUESTION TITLE STATE */}
-            {gameState === 'QUESTION_TITLE' && (
-              <motion.div
-                key={`question-title-cycle-${globalQuestionIdx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0"
-              >
-                <VideoPlayer
-                  src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
-                  onEnded={handleQuestionTitleEnded}
-                />
-              </motion.div>
-            )}
-
-            {/* 4 & 5. QUESTION AND RESPONSE STATE */}
-            {(gameState === 'QUESTION' || gameState === 'RESPONSE') && (
-              <motion.div
-                key={`question-cycle-${globalQuestionIdx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0"
-              >
-                {gameState === 'QUESTION' ? (
-                  <VideoPlayer
-                    src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
-                    onEnded={handleQuestionEnded}
-                    loop={false}
-                  />
-                ) : (
-                  <motion.img
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    src={`./images/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    alt=""
-                  />
-                )}
-
-                {gameState === 'RESPONSE' && (
-                  <>
-                    <DraggableTeams
-                      question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
-                      containerRef={containerRef}
-                      onResponse={handleResponse}
-                      visibleTeams={visibleTeams}
-                      zones={zones}
-                    />
-                    {sequences[currentSequenceIdx].questions[currentQuestionIdx]
-                      .numberOfQuestions !== 4 && (
-                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
-                        <NextButton onClick={handleIntermediateScoreEnded} />
-                        <ResetButton onClick={handleReset} />
-                      </div>
-                    )}
-                  </>
-                )}
-              </motion.div>
-            )}
-
-            {/* 6. RESULT FEEDBACK STATE */}
-            {gameState === 'RESULT_FEEDBACK' && (
-              <ResultFeedbackScreen
-                isCorrect={lastResult === 'TRUE'}
-                onEnded={handleResultFeedbackEnded}
-              />
-            )}
-
-            {/* 7. ANSWER VIDEO STATE */}
-            {gameState === 'ANSWER_VIDEO' && (
-              <motion.div
-                key={`answer-video-${currentAnswerVideoIdx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0"
-                onClick={handleAnswerVideoEnded}
-              >
-                <VideoPlayer
-                  src={
-                    Array.isArray(
-                      sequences[currentSequenceIdx]?.questions[currentQuestionIdx]
-                        ?.correctAnswerIndex
-                    )
-                      ? `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
-                      : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
-                  }
-                />
-              </motion.div>
-            )}
-
-            {/* 8. INTERMEDIATE SCORE STATE */}
-            {gameState === 'INTERMEDIATE_SCORE' && (
-              <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} />
-            )}
-
-            {/* 9. FINAL SCORE STATE */}
-            {gameState === 'SCORE_SCREEN' && <FinalScoreScreen onClick={handleScoreScreenEnded} />}
-
-            {/* 10. FINAL VIDEO STATE */}
-            {gameState === 'FIN' && (
-              <motion.div
-                key="final-video"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-0"
-                onClick={() => setGameState('WAITING')}
-              >
-                <VideoPlayer src={`./videos/${videoFormat}/0_MERCI.mp4`} loop={true} />
-              </motion.div>
-            )}
-
-            {/* Invisible restart button (200x200 px, top-left) */}
-            <button
-              onClick={handleRestartClick}
-              onDoubleClick={restartApp}
-              className="absolute top-0 left-0 w-[200px] h-[200px] bg-transparent border-none outline-none cursor-default z-[9999] pointer-events-auto"
-              aria-label="Restart Application"
+          {/* 0. INIT STATE */}
+          {gameState === 'INIT' && (
+            <InitScreen
+              onStart={handleStartApp}
+              onConnectSerial={connectSerial}
+              serialConnected={serialConnected}
+              isSerialSupported={isSerialSupported}
+              serialPortName={serialPortName}
             />
-          </div>
-        </AppModeProvider>
+          )}
+
+          {/* 1. WAITING STATE */}
+          {gameState === 'WAITING' && <WaitingScreen onStart={resetGame} />}
+
+          {/* 2. SEQUENCE TITLE STATE */}
+          {gameState === 'SEQUENCE_TITLE' && (
+            <motion.div
+              key={`sequence-title-cycle-${currentSequenceIdx}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-0"
+            >
+              <VideoPlayer
+                src={`./videos/${videoFormat}/${sequences[currentSequenceIdx].sequence}`}
+                onEnded={() => setGameState('QUESTION_TITLE')}
+              />
+            </motion.div>
+          )}
+
+          {/* 3. QUESTION TITLE STATE */}
+          {gameState === 'QUESTION_TITLE' && (
+            <motion.div
+              key={`question-title-cycle-${globalQuestionIdx}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-0"
+            >
+              <VideoPlayer
+                src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
+                onEnded={handleQuestionTitleEnded}
+              />
+            </motion.div>
+          )}
+
+          {/* 4 & 5. QUESTION AND RESPONSE STATE */}
+          {(gameState === 'QUESTION' || gameState === 'RESPONSE') && (
+            <motion.div
+              key={`question-cycle-${globalQuestionIdx}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-0"
+            >
+              {gameState === 'QUESTION' ? (
+                <VideoPlayer
+                  src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
+                  onEnded={handleQuestionEnded}
+                  loop={false}
+                />
+              ) : (
+                <motion.img
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  src={`./images/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  alt=""
+                />
+              )}
+
+              {gameState === 'RESPONSE' && (
+                <>
+                  <DraggableTeams
+                    question={sequences[currentSequenceIdx].questions[currentQuestionIdx]}
+                    containerRef={containerRef}
+                    onResponse={handleResponse}
+                    visibleTeams={visibleTeams}
+                    zones={zones}
+                  />
+                  {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !==
+                    4 && (
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                      <NextButton onClick={handleIntermediateScoreEnded} />
+                      <ResetButton onClick={handleReset} />
+                    </div>
+                  )}
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* 6. RESULT FEEDBACK STATE */}
+          {gameState === 'RESULT_FEEDBACK' && (
+            <ResultFeedbackScreen
+              isCorrect={lastResult === 'TRUE'}
+              onEnded={handleResultFeedbackEnded}
+            />
+          )}
+
+          {/* 7. ANSWER VIDEO STATE */}
+          {gameState === 'ANSWER_VIDEO' && (
+            <motion.div
+              key={`answer-video-${currentAnswerVideoIdx}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-0"
+              onClick={handleAnswerVideoEnded}
+            >
+              <VideoPlayer
+                src={
+                  Array.isArray(
+                    sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.correctAnswerIndex
+                  )
+                    ? `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
+                    : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
+                }
+              />
+            </motion.div>
+          )}
+
+          {/* 8. INTERMEDIATE SCORE STATE */}
+          {gameState === 'INTERMEDIATE_SCORE' && (
+            <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} />
+          )}
+
+          {/* 9. FINAL SCORE STATE */}
+          {gameState === 'SCORE_SCREEN' && <FinalScoreScreen onClick={handleScoreScreenEnded} />}
+
+          {/* 10. FINAL VIDEO STATE */}
+          {gameState === 'FIN' && (
+            <motion.div
+              key="final-video"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-0"
+              onClick={() => setGameState('WAITING')}
+            >
+              <VideoPlayer src={`./videos/${videoFormat}/0_MERCI.mp4`} loop={true} />
+            </motion.div>
+          )}
+
+          {/* Invisible restart button (200x200 px, top-left) */}
+          <button
+            onClick={handleRestartClick}
+            onDoubleClick={restartApp}
+            className="absolute top-0 left-0 w-[200px] h-[200px] bg-transparent border-none outline-none cursor-default z-[9999] pointer-events-auto"
+            aria-label="Restart Application"
+          />
+        </div>
       </TeamsProvider>
     </VideoFormatProvider>
+  );
+}
+
+function App() {
+  return (
+    <AppModeProvider>
+      <AppContent />
+    </AppModeProvider>
   );
 }
 

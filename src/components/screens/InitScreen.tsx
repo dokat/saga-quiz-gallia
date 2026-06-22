@@ -16,7 +16,7 @@ export const InitScreen = ({
   isSerialSupported,
   serialPortName,
 }: InitScreenProps) => {
-  const { appMode, setAppMode } = useAppModeContext();
+  const { appMode, setAppMode, debugMode, setDebugMode } = useAppModeContext();
   return (
     <motion.div
       key="init"
@@ -81,6 +81,25 @@ export const InitScreen = ({
                 )}
               </button>
             </div>
+          </div>
+
+          <div className="w-px h-12 bg-white/10" />
+
+          {/* Debug Mode Toggle */}
+          <div className="flex flex-col gap-2">
+            <span className="text-white/40 text-[10px] font-black uppercase tracking-widest text-center">
+              Debug
+            </span>
+            <button
+              onClick={() => setDebugMode(!debugMode)}
+              className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                debugMode
+                  ? 'bg-orange-500 text-white shadow-xl scale-105'
+                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+              }`}
+            >
+              {debugMode ? 'ON' : 'OFF'}
+            </button>
           </div>
         </div>
       </div>
