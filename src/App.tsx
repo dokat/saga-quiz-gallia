@@ -112,13 +112,14 @@ function AppContent() {
       const isCorrect = Array.isArray(question.correctAnswerIndex)
         ? question.correctAnswerIndex.includes(zoneIndex)
         : zoneIndex === question.correctAnswerIndex;
-
-      setLastResult(isCorrect ? 'TRUE' : 'FALSE');
-      setGameState('RESULT_FEEDBACK');
+      console.log('isCorrect: ', isCorrect);
 
       if (isCorrect) {
         handleAddScore(teamIndex);
       }
+
+      setLastResult(isCorrect ? 'TRUE' : 'FALSE');
+      setGameState('RESULT_FEEDBACK');
     },
     [currentSequenceIdx, currentQuestionIdx, sequences, handleAddScore]
   );
@@ -134,8 +135,8 @@ function AppContent() {
 
   const handleAnswerVideoEnded = useCallback(() => {
     const question = sequences[currentSequenceIdx]?.questions[currentQuestionIdx];
-    if (question && Array.isArray(question.correctAnswerIndex)) {
-      if (currentAnswerVideoIdx < question.correctAnswerIndex.length - 1) {
+    if (question !== undefined && question.numberOfAnswerVideos > 1) {
+      if (currentAnswerVideoIdx < question.numberOfAnswerVideos - 1) {
         setCurrentAnswerVideoIdx((prev) => prev + 1);
         return;
       }
@@ -404,9 +405,8 @@ function AppContent() {
             >
               <VideoPlayer
                 src={
-                  Array.isArray(
-                    sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.correctAnswerIndex
-                  )
+                  sequences[currentSequenceIdx]?.questions[currentQuestionIdx]
+                    ?.numberOfAnswerVideos > 1
                     ? `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
                     : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
                 }

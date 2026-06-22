@@ -26,9 +26,6 @@ export const DraggableTeams: React.FC<DraggableTeamsProps> = ({
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   const currentZones = zones[videoFormat][question.numberOfQuestions];
-  console.log(zones);
-  console.log(question);
-  console.log(currentZones);
 
   useEffect(() => {
     const hasVisibleTeam = visibleTeams.some((v) => v);

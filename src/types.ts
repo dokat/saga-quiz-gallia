@@ -21,17 +21,21 @@ export interface Sequence {
 export interface Question {
   numberOfQuestions: number;
   correctAnswerIndex: number | number[]; // 0-3
+  numberOfAnswerVideos: number;
 }
 
 export interface Zones {
-  [key: string]: { //videoFormat
-    [key: number]: { //numberOfQuestions
-      [key: string]: { //indexZone
+  [key: string]: {
+    //videoFormat
+    [key: number]: {
+      //numberOfQuestions
+      [key: string]: {
+        //indexZone
         x: number;
         y: number;
         w: number;
         h: number;
-      }
+      };
     };
   };
 }
