@@ -41,6 +41,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       autoPlay={autoPlay}
       playsInline={playsInline}
       muted={muted}
+      preload="auto"
       className={cn(
         'absolute inset-0 w-full h-full object-fill select-none pointer-events-auto',
         className
