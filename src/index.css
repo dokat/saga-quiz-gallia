@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
+  --color-background: #efe8d8;
   --color-primary: #f59e0b;
   --color-secondary: #3b82f6;
   --color-team1: #ef4444;
@@ -12,4 +13,5 @@ body,
 #root {
   @apply h-screen w-full overflow-hidden;
   /* cursor: none; */
+  background-color: var(--color-background);
 }
