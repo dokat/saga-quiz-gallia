@@ -14,7 +14,7 @@ export const ResetButton = ({ onClick }: ResetButtonProps) => (
                text-white text-3xl font-bold italic tracking-wider shadow-2xl
                hover:bg-white/20 transition-colors"
   >
-    RESET
+    RELANCE
   </motion.button>
 );
 
