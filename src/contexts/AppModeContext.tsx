@@ -5,6 +5,8 @@ export type AppModeContextType = {
   setAppMode: (mode: 'TOUCHSCREEN' | 'BUZZER') => void;
   debugMode: boolean;
   setDebugMode: (debug: boolean) => void;
+  numScenario: number;
+  setNumScenario: (numScenario: number) => void;
 };
 
 const AppModeContext = createContext<AppModeContextType | null>(null);
@@ -17,12 +19,14 @@ export function AppModeProvider({ children }: { children: ReactNode }) {
 
   const [debugMode, setDebugMode] = useState<boolean>(false);
 
+  const [numScenario, setNumScenario] = useState<number>(1);
+
   useEffect(() => {
     localStorage.setItem('appMode', appMode);
   }, [appMode]);
 
   return (
-    <AppModeContext.Provider value={{ appMode, setAppMode, debugMode, setDebugMode }}>
+    <AppModeContext.Provider value={{ appMode, setAppMode, debugMode, setDebugMode, numScenario, setNumScenario }}>
       {children}
     </AppModeContext.Provider>
   );

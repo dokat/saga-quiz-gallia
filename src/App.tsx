@@ -35,7 +35,7 @@ function AppContent() {
   const [lastResult, setLastResult] = useState<'TRUE' | 'FALSE' | null>(null);
   const { videoFormat, adjustZone, scaleSize } = useVideoFormat();
   const [visibleTeams, setVisibleTeams] = useState<boolean[]>([true, true]);
-  const { appMode } = useAppModeContext();
+  const { appMode, numScenario } = useAppModeContext();
 
   useEffect(() => {
     if (appMode === 'BUZZER' && gameState === 'RESPONSE') {
@@ -58,6 +58,10 @@ function AppContent() {
     });
   }, []);
 
+  const currentQuestionId = useMemo(() => {
+    return sequences[currentSequenceIdx]?.questions[currentQuestionIdx]?.index ?? 0;
+  }, [currentSequenceIdx, currentQuestionIdx, sequences]);
+
   const globalQuestionIdx = useMemo(() => {
     let idx = 0;
     for (let i = 0; i < currentSequenceIdx; i++) {
@@ -65,11 +69,12 @@ function AppContent() {
         idx += sequences[i].questions.length;
       }
     }
-    return idx + currentQuestionIdx;
+    return idx + currentQuestionIdx + 1;
   }, [currentSequenceIdx, currentQuestionIdx, sequences]);
 
   useEffect(() => {
-    fetch(`./data/questions.json`)
+    console.log('Loading scenario:', numScenario);
+    fetch(`./data/scenario_${numScenario}.json`)
       .then((res) => res.json())
       .then((data) => setSequences(data as Sequence[]))
       .catch((err) => console.error('Failed to load sequences:', err));
@@ -78,7 +83,7 @@ function AppContent() {
       .then((res) => res.json())
       .then((data) => setZones(data as Zones))
       .catch((err) => console.error('Failed to load zones:', err));
-  }, []);
+  }, [numScenario]);
 
   const resetGame = useCallback(() => {
     setTeams((prev) => prev.map((t) => ({ ...t, score: 0 })));
@@ -333,7 +338,7 @@ function AppContent() {
               className="absolute inset-0 z-0"
             >
               <VideoPlayer
-                src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_TITRAGE.mp4`}
+                src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx}_TITRAGE.mp4`}
                 onEnded={handleQuestionTitleEnded}
               />
             </motion.div>
@@ -342,7 +347,7 @@ function AppContent() {
           {/* 4 & 5. QUESTION AND RESPONSE STATE */}
           {(gameState === 'QUESTION' || gameState === 'RESPONSE') && (
             <motion.div
-              key={`question-cycle-${globalQuestionIdx}`}
+              key={`question-cycle-${currentQuestionId}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -350,7 +355,7 @@ function AppContent() {
             >
               {gameState === 'QUESTION' ? (
                 <VideoPlayer
-                  src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION.mp4`}
+                  src={`./videos/${videoFormat}/QUIZ_${currentQuestionId}_QUESTION.mp4`}
                   onEnded={handleQuestionEnded}
                   loop={false}
                 />
@@ -358,7 +363,7 @@ function AppContent() {
                 <motion.img
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  src={`./images/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_QUESTION_last.jpg`}
+                  src={`./images/${videoFormat}/QUIZ_${currentQuestionId}_QUESTION_last.jpg`}
                   className="absolute inset-0 w-full h-full object-cover"
                   alt=""
                 />
@@ -375,11 +380,11 @@ function AppContent() {
                   />
                   {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !==
                     4 && (
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
-                      <NextButton onClick={handleIntermediateScoreEnded} />
-                      <ResetButton onClick={handleReset} />
-                    </div>
-                  )}
+                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                        <NextButton onClick={handleIntermediateScoreEnded} />
+                        <ResetButton onClick={handleReset} />
+                      </div>
+                    )}
                 </>
               )}
             </motion.div>
@@ -407,8 +412,8 @@ function AppContent() {
                 src={
                   sequences[currentSequenceIdx]?.questions[currentQuestionIdx]
                     ?.numberOfAnswerVideos > 1
-                    ? `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
-                    : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx + 1}_REPONSE.mp4`
+                    ? `./videos/${videoFormat}/QUIZ_${currentQuestionId}_REPONSE_${currentAnswerVideoIdx + 1}.mp4`
+                    : `./videos/${videoFormat}/QUIZ_${currentQuestionId}_REPONSE.mp4`
                 }
               />
             </motion.div>

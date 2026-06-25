@@ -19,6 +19,7 @@ export interface Sequence {
 }
 
 export interface Question {
+  index: number;
   numberOfQuestions: number;
   correctAnswerIndex: number | number[]; // 0-3
   numberOfAnswerVideos: number;
