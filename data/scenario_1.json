@@ -1,0 +1,19 @@
+[
+  {
+    "sequence": "4_TITRAGE_DEGUSTATION.mp4",
+    "questions": [
+      {
+        "index": 12,
+        "numberOfQuestions": 6,
+        "correctAnswerIndex": 1,
+        "numberOfAnswerVideos": 0
+      },
+      {
+        "index": 13,
+        "numberOfQuestions": 6,
+        "correctAnswerIndex": 2,
+        "numberOfAnswerVideos": 0
+      }
+    ]
+  }
+]
