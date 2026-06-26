@@ -24,19 +24,19 @@ export default defineConfig(function () {
                             src: 'favicon.svg',
                             sizes: 'any',
                             type: 'image/svg+xml',
-                            purpose: 'any maskable'
-                        }
-                    ]
+                            purpose: 'any maskable',
+                        },
+                    ],
                 },
                 workbox: {
                     globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,mp4,json}'],
                     maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100MB
                 },
                 devOptions: {
-                    enabled: true
-                }
-            })
+                    enabled: true,
+                },
+            }),
         ],
-        base: '/saga-quiz-gallia/',
+        base: '',
     };
 });
