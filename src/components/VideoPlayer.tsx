@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { cn } from '../utils/cn';
 
 interface VideoPlayerProps {
@@ -18,35 +18,62 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   onEnded,
   onClick,
   className,
-  autoPlay = true,
-  playsInline = true,
   muted = false,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      videoRef.current.play().catch((e) => console.error('Video play failed:', e));
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlaying = () => {
+      setIsPlaying(true);
+    };
+
+    const handleWaiting = () => {
+      setIsPlaying(false);
+    };
+
+    // const tryPlay = async () => {
+    //   try {
+    //     await video.play();
+    //   } catch (e) {
+    //     console.warn('Video play failed:', e);
+    //   }
+    // };
+
+    // important : attendre que le pipeline soit prêt
+    // video.muted = true;
+
+    video.addEventListener('playing', handlePlaying);
+    video.addEventListener('waiting', handleWaiting);
+
+    video.play().catch(() => {});
+
+    return () => {
+      video.removeEventListener('playing', handlePlaying);
+      video.removeEventListener('waiting', handleWaiting);
+    };
   }, [src]);
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      loop={loop}
-      onEnded={onEnded}
-      onClick={onClick}
-      autoPlay={autoPlay}
-      playsInline={playsInline}
-      muted={muted}
-      preload="auto"
-      className={cn(
-        'absolute inset-0 w-full h-full object-fill select-none pointer-events-auto',
-        className
-      )}
-    />
+    <div className={cn('absolute inset-0', className)}>
+      <video
+        ref={videoRef}
+        src={src}
+        loop={loop}
+        onEnded={onEnded}
+        onClick={onClick}
+        playsInline
+        muted={muted}
+        preload="auto"
+        className={cn(
+          'w-full h-full object-fill select-none pointer-events-auto transition-opacity duration-150',
+          isPlaying ? 'opacity-100' : 'opacity-0'
+        )}
+      />
+    </div>
   );
 };
 
