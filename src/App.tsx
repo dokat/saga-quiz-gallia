@@ -238,12 +238,12 @@ function AppContent() {
       if (gameState === 'RESPONSE' && appMode === 'BUZZER') {
         const lowerKey = key.toLowerCase();
         let zoneIndex = -1;
-        if (lowerKey.includes('w')) zoneIndex = 0;
-        else if (lowerKey.includes('x')) zoneIndex = 1;
-        else if (lowerKey.includes('c')) zoneIndex = 2;
-        else if (lowerKey.includes('v')) zoneIndex = 3;
-        else if (lowerKey.includes('b')) zoneIndex = 4;
-        else if (lowerKey.includes('n')) zoneIndex = 5;
+        if (lowerKey.includes('g')) zoneIndex = 0;
+        else if (lowerKey.includes('h')) zoneIndex = 1;
+        else if (lowerKey.includes('j')) zoneIndex = 2;
+        else if (lowerKey.includes('k')) zoneIndex = 3;
+        else if (lowerKey.includes('l')) zoneIndex = 4;
+        else if (lowerKey.includes('m')) zoneIndex = 5;
         // If a team has already buzzed in (at least one is visible)
         if (visibleTeams.includes(true)) {
           if (zoneIndex !== -1) {
@@ -255,12 +255,12 @@ function AppContent() {
           return;
         }
 
-        if (key.includes('1') || key.includes('a')) {
+        if (key.includes('1') || key.includes('a') || key.includes('q')) {
           console.log('Team 1 selected');
           setVisibleTeams([true, false]);
           playBuzzerSound();
           return;
-        } else if (key.includes('2') || key.includes('z')) {
+        } else if (key.includes('2') || key.includes('z') || key.includes('w')) {
           console.log('Team 2 selected');
           setVisibleTeams([false, true]);
           playBuzzerSound();
@@ -380,11 +380,11 @@ function AppContent() {
                   />
                   {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !==
                     4 && (
-                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
-                        <NextButton onClick={handleIntermediateScoreEnded} />
-                        <ResetButton onClick={handleReset} />
-                      </div>
-                    )}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                      <NextButton onClick={handleIntermediateScoreEnded} />
+                      <ResetButton onClick={handleReset} />
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>
