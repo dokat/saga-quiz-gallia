@@ -382,7 +382,7 @@ function AppContent() {
                     4 && (
                       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
                         <NextButton onClick={handleIntermediateScoreEnded} />
-                        <ResetButton onClick={handleReset} />
+                        {appMode !== 'TOUCHSCREEN' && <ResetButton onClick={handleReset} />}
                       </div>
                     )}
                 </>
