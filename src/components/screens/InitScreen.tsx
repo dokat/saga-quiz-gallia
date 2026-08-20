@@ -11,10 +11,11 @@ interface InitScreenProps {
 }
 
 const scenarioNames = [
-  "SCENARIO DEGUSTATION",
-  "SCENARIO QUIZ IPA + DEGUSTATION",
-  "SCENARIO QUIZ BIERE + QUIZ GALLIA + QUIZ IPA + DEGUSTATION",
-]
+  'SCENARIO DEGUSTATION',
+  'SCENARIO QUIZ IPA + DEGUSTATION',
+  'SCENARIO QUIZ BIERE + QUIZ GALLIA + QUIZ IPA + DEGUSTATION',
+  'SCENARIO MODE ALEATOIRE',
+];
 
 export const InitScreen = ({
   onStart,
@@ -39,7 +40,7 @@ export const InitScreen = ({
         alt="Logo"
       />
       <div className="flex flex-col gap-8 z-10 w-1/2 items-center ">
-        {[1, 2, 3].map((scenario) => (
+        {[1, 2, 3, 4].map((scenario) => (
           <button
             key={scenario}
             onClick={(e) => {
@@ -48,7 +49,8 @@ export const InitScreen = ({
               onStart();
             }}
             className="w-full px-12 py-6 cursor-pointer rounded-full bg-black/40 backdrop-blur-md border-4 border-white/20 text-white font-black text-2xl uppercase tracking-[0.2em] hover:bg-black/40 hover:scale-105 transition-all shadow-[0_0_50px_rgba(0,0,0,0.5)] drop-shadow-xl"
-          >{scenarioNames[scenario - 1]}
+          >
+            {scenarioNames[scenario - 1]}
           </button>
         ))}
       </div>
@@ -82,19 +84,21 @@ export const InitScreen = ({
             <div className="flex gap-2">
               <button
                 onClick={() => setAppMode('TOUCHSCREEN')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${appMode === 'TOUCHSCREEN'
-                  ? 'bg-white text-secondary shadow-xl scale-105'
-                  : 'text-secondary/40 hover:text-secondary/70 hover:bg-white/5'
-                  }`}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                  appMode === 'TOUCHSCREEN'
+                    ? 'bg-white text-secondary shadow-xl scale-105'
+                    : 'text-secondary/40 hover:text-secondary/70 hover:bg-white/5'
+                }`}
               >
                 Tactile
               </button>
               <button
                 onClick={() => setAppMode('BUZZER')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm  text-secondary flex items-center gap-2 ${appMode === 'BUZZER'
-                  ? 'bg-yellow-500 text-white shadow-xl scale-105'
-                  : 'text-secondary hover:text-secondary hover:bg-white/5'
-                  }`}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm  text-secondary flex items-center gap-2 ${
+                  appMode === 'BUZZER'
+                    ? 'bg-yellow-500 text-white shadow-xl scale-105'
+                    : 'text-secondary hover:text-secondary hover:bg-white/5'
+                }`}
               >
                 Buzzer{serialConnected && serialPortName ? ` (${serialPortName})` : ''}
                 {appMode === 'BUZZER' && serialConnected && (
@@ -113,10 +117,11 @@ export const InitScreen = ({
             </span>
             <button
               onClick={() => setDebugMode(!debugMode)}
-              className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${debugMode
-                ? 'bg-orange-500 text-white shadow-xl scale-105'
-                : 'text-secondary hover:bg-white/5'
-                }`}
+              className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
+                debugMode
+                  ? 'bg-orange-500 text-white shadow-xl scale-105'
+                  : 'text-secondary hover:bg-white/5'
+              }`}
             >
               {debugMode ? 'ON' : 'OFF'}
             </button>
