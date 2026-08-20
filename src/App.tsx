@@ -17,6 +17,7 @@ import { VideoFormatProvider } from './contexts/VideoFormatContext';
 import { TeamsProvider } from './contexts/TeamsContext';
 import { AppModeProvider, useAppModeContext } from './contexts/AppModeContext';
 import ResetButton from './components/ResetButton';
+import { prepareSequences } from './utils/scenarioUtils';
 
 function AppContent() {
   const [gameState, setGameState] = useState<GameState>('INIT');
@@ -27,6 +28,7 @@ function AppContent() {
   const [currentSequenceIdx, setCurrentSequenceIdx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [currentAnswerVideoIdx, setCurrentAnswerVideoIdx] = useState(0);
+  const [rawSequences, setRawSequences] = useState<Sequence[]>([]);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   console.log(sequences);
 
@@ -76,7 +78,10 @@ function AppContent() {
     console.log('Loading scenario:', numScenario);
     fetch(`./data/scenario_${numScenario}.json`)
       .then((res) => res.json())
-      .then((data) => setSequences(data as Sequence[]))
+      .then((data: Sequence[]) => {
+        setRawSequences(data);
+        setSequences(prepareSequences(data, numScenario));
+      })
       .catch((err) => console.error('Failed to load sequences:', err));
 
     fetch(`./data/zones.json`)
@@ -89,8 +94,9 @@ function AppContent() {
     setTeams((prev) => prev.map((t) => ({ ...t, score: 0 })));
     setCurrentSequenceIdx(0);
     setCurrentQuestionIdx(0);
+    setSequences(prepareSequences(rawSequences, numScenario));
     setGameState('SEQUENCE_TITLE');
-  }, []);
+  }, [rawSequences, numScenario]);
 
   const handleQuestionTitleEnded = useCallback(() => {
     setGameState('QUESTION');
@@ -183,8 +189,9 @@ function AppContent() {
     setTeams((prev) => prev.map((t) => ({ ...t, score: 0 })));
     setCurrentSequenceIdx(0);
     setCurrentQuestionIdx(0);
+    setSequences(prepareSequences(rawSequences, numScenario));
     setGameState('INIT');
-  }, []);
+  }, [rawSequences, numScenario]);
 
   const lastClickTime = useRef<number>(0);
   const handleRestartClick = useCallback(() => {

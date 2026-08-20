@@ -1,0 +1,1 @@
+export const SCENARIO_4_QUESTION_COUNT = 5;
