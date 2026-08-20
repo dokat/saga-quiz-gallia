@@ -338,7 +338,11 @@ function AppContent() {
               className="absolute inset-0 z-0"
             >
               <VideoPlayer
-                src={`./videos/${videoFormat}/QUIZ_${globalQuestionIdx}_TITRAGE.mp4`}
+                src={
+                  numScenario === 4
+                    ? `./videos/${videoFormat}/QUIZ_TITRAGE.mp4`
+                    : `./videos/${videoFormat}/QUIZ_${globalQuestionIdx}_TITRAGE.mp4`
+                }
                 onEnded={handleQuestionTitleEnded}
               />
             </motion.div>
@@ -380,11 +384,11 @@ function AppContent() {
                   />
                   {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !==
                     4 && (
-                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
-                        <NextButton onClick={handleIntermediateScoreEnded} />
-                        {appMode !== 'TOUCHSCREEN' && <ResetButton onClick={handleReset} />}
-                      </div>
-                    )}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                      <NextButton onClick={handleIntermediateScoreEnded} />
+                      {appMode !== 'TOUCHSCREEN' && <ResetButton onClick={handleReset} />}
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>
