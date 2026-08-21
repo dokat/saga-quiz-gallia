@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { useAppModeContext } from '../../contexts/AppModeContext';
 import { useVideoFormat } from '../../hooks/useVideoFormat';
+import VersionDisplay from '../VersionDisplay';
 
 interface InitScreenProps {
   onStart: () => void;
@@ -84,21 +85,19 @@ export const InitScreen = ({
             <div className="flex gap-2">
               <button
                 onClick={() => setAppMode('TOUCHSCREEN')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
-                  appMode === 'TOUCHSCREEN'
-                    ? 'bg-white text-secondary shadow-xl scale-105'
-                    : 'text-secondary/40 hover:text-secondary/70 hover:bg-white/5'
-                }`}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${appMode === 'TOUCHSCREEN'
+                  ? 'bg-white text-secondary shadow-xl scale-105'
+                  : 'text-secondary/40 hover:text-secondary/70 hover:bg-white/5'
+                  }`}
               >
                 Tactile
               </button>
               <button
                 onClick={() => setAppMode('BUZZER')}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm  text-secondary flex items-center gap-2 ${
-                  appMode === 'BUZZER'
-                    ? 'bg-yellow-500 text-white shadow-xl scale-105'
-                    : 'text-secondary hover:text-secondary hover:bg-white/5'
-                }`}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm  text-secondary flex items-center gap-2 ${appMode === 'BUZZER'
+                  ? 'bg-yellow-500 text-white shadow-xl scale-105'
+                  : 'text-secondary hover:text-secondary hover:bg-white/5'
+                  }`}
               >
                 Buzzer{serialConnected && serialPortName ? ` (${serialPortName})` : ''}
                 {appMode === 'BUZZER' && serialConnected && (
@@ -117,16 +116,19 @@ export const InitScreen = ({
             </span>
             <button
               onClick={() => setDebugMode(!debugMode)}
-              className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${
-                debugMode
-                  ? 'bg-orange-500 text-white shadow-xl scale-105'
-                  : 'text-secondary hover:bg-white/5'
-              }`}
+              className={`px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all text-sm ${debugMode
+                ? 'bg-orange-500 text-white shadow-xl scale-105'
+                : 'text-secondary hover:bg-white/5'
+                }`}
             >
               {debugMode ? 'ON' : 'OFF'}
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="absolute bottom-4 left-4">
+        <VersionDisplay />
       </div>
     </motion.div>
   );
