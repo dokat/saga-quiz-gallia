@@ -300,7 +300,7 @@ function AppContent() {
       <TeamsProvider value={{ teams, addScore: handleAddScore }}>
         <div
           ref={containerRef}
-          className="relative w-full h-full bg-zinc-900 overflow-hidden select-none touch-none"
+          className="relative w-full h-full bg-black overflow-hidden select-none touch-none"
         >
           {/* Global persistent UI layer */}
           {/* {(gameState === 'INTERMEDIATE_SCORE') && <TeamUI teams={teams} />} */}
@@ -391,11 +391,11 @@ function AppContent() {
                   />
                   {sequences[currentSequenceIdx].questions[currentQuestionIdx].numberOfQuestions !==
                     4 && (
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
-                      <NextButton onClick={handleIntermediateScoreEnded} />
-                      {appMode !== 'TOUCHSCREEN' && <ResetButton onClick={handleReset} />}
-                    </div>
-                  )}
+                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                        <NextButton onClick={handleIntermediateScoreEnded} />
+                        {appMode !== 'TOUCHSCREEN' && <ResetButton onClick={handleReset} />}
+                      </div>
+                    )}
                 </>
               )}
             </motion.div>
@@ -432,7 +432,31 @@ function AppContent() {
 
           {/* 8. INTERMEDIATE SCORE STATE */}
           {gameState === 'INTERMEDIATE_SCORE' && (
-            <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} />
+            <>
+              <IntermediateScoreScreen onClick={handleIntermediateScoreEnded} />
+              {numScenario === 4 &&
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[60] flex gap-4 pointer-events-auto">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleIntermediateScoreEnded();
+                    }}
+                    className="w-full px-8 py-4 cursor-pointer rounded-full bg-black/40 backdrop-blur-md border-4 border-white/20 text-white font-black text-2xl uppercase tracking-[0.2em] hover:bg-black/40 hover:scale-105 transition-all shadow-[0_0_50px_rgba(0,0,0,0.5)] drop-shadow-xl"
+                  >
+                    Continuer
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setGameState('SCORE_SCREEN');
+                    }}
+                    className="w-full px-8 py-4 cursor-pointer rounded-full bg-black/40 backdrop-blur-md border-4 border-white/20 text-white font-black text-2xl uppercase tracking-[0.2em] hover:bg-black/40 hover:scale-105 transition-all shadow-[0_0_50px_rgba(0,0,0,0.5)] drop-shadow-xl"
+                  >
+                    Arrêter
+                  </button>
+                </div>
+              }
+            </>
           )}
 
           {/* 9. FINAL SCORE STATE */}

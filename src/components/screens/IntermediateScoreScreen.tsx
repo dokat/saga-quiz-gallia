@@ -11,7 +11,7 @@ export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProp
   const { teams } = useTeamsContext();
 
   return (
-    <>
+    <div className="absolute inset-0 mb-24 ">
       <motion.div
         key="intermediate-score"
         initial={{ opacity: 0 }}
@@ -37,7 +37,7 @@ export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProp
               scale: 0.9,
             }}
             animate={{
-              y: 0,
+              y: -48,
               opacity: 1,
               scale: 1,
             }}
@@ -65,7 +65,7 @@ export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProp
                 stiffness: 200,
                 damping: 15,
               }}
-              className="text-8xl font-black text-white italic"
+              className="text-8xl font-black text-white italic "
               style={{ fontSize: scaleSize(96) }}
             >
               {teams[index].score}
@@ -80,6 +80,6 @@ export const IntermediateScoreScreen = ({ onClick }: IntermediateScoreScreenProp
           </motion.div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
